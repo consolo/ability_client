@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns="http://www.visionshareinc.com/seapi/2008-09-22" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <service id="1" type="BatchSubmit">
+    <name>NGS Medicare Part B Submit Claims (Downstate NY)</name>
+    <uri>https://portal.visionshareinc.com/portal/seapi/services/BatchSubmit/1</uri>
+  </service>
+  <service id="2" type="BatchReceiveList">
+    <name>NGS Medicare Part B Receive Reports / Remits (Downstate NY)</name>
+    <uri>https://portal.visionshareinc.com/portal/seapi/services/BatchReceiveList/2</uri>
+  </service>
+  <service id="79" type="BatchSubmit">
+    <name>NGS Medicare Part B Submit Claims (CT)</name>
+    <uri>https://portal.visionshareinc.com/portal/seapi/services/BatchSubmit/79</uri>
+  </service>
+  <service id="80" type="BatchReceiveList">
+    <name>NGS Medicare Part B Receive Reports / Remits (CT)</name>
+    <uri>https://portal.visionshareinc.com/portal/seapi/services/BatchReceiveList/80</uri>
+  </service>
+</services>

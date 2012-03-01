@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<claimInquiryRequest xmlns="http://www.visionshareinc.com/seapi/2008-09-22">
+  <medicareMainframe>
+    <application>
+      <facilityState>OH</facilityState>
+      <lineOfBusiness>PartA</lineOfBusiness>
+    </application>
+    <credential>
+      <userId>DS77915</userId>
+      <password>somepass</password>
+    </credential>
+  </medicareMainframe>
+  <details>
+    <detail>Beneficiary</detail>
+  </details>
+  <searchCriteria maxResults="100">
+    <npi>1234567893</npi>
+    <hic>123456789A</hic>
+    <status>P</status>
+    <location>B9997</location>
+    <typeOfBill>131</typeOfBill>
+    <fromDate>2007-05-08</fromDate>
+    <toDate>2007-05-08</toDate>
+    <totalCharges>100.23</totalCharges>
+  </searchCriteria>
+</claimInquiryRequest>

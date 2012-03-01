@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<claimInquiryResponse xmlns="http://www.visionshareinc.com/seapi/2008-09-22">
+  <searchResult numResults="2">
+    <claim>
+      <npi>123457890</npi>
+      <hic>123456789A</hic>
+      <medicareProviderNumber>123456</medicareProviderNumber>
+      <status>P</status>
+      <location>B9997</location>
+      <typeOfBill>131</typeOfBill>
+      <fromDate>2007-05-08</fromDate>
+      <toDate>2007-05-08</toDate>
+      <admissionDate>2007-05-08</admissionDate>
+      <receivedDate>2007-05-15</receivedDate>
+      <lastName>Doe</lastName>
+      <firstInitial>J</firstInitial>
+      <totalCharges>100.23</totalCharges>
+      <providerReimbursement>50.23</providerReimbursement>
+      <processedDate>2007-06-04</processedDate>
+      <paymentCancelledDate>2007-06-14</paymentCancelledDate>
+      <reasonCodes>
+        <reasonCode>37192</reasonCode>
+      </reasonCodes>
+      <nonPaymentCode>123</nonPaymentCode>
+      <!-- Beneficiary Detail -->
+      <patientControlNumber>PCN123456789</patientControlNumber>
+      <firstName>John</firstName>
+      <middleInitial>Z</middleInitial>
+      <dateOfBirth>1942-01-07</dateOfBirth>
+      <sex>M</sex>
+      <address1>123 street</address1>
+      <address2>city</address2>
+      <address3>state</address3>
+      <zipCode>987654321</zipCode>
+    </claim>
+  </searchResult>
+</claimInquiryResponse>

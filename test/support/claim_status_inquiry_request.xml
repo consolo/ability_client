@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<claimStatusInquiryRequest xmlns="http://www.visionshareinc.com/seapi/2008-09-22">
+  <medicareMainframe>
+    <application>
+      <facilityState>OK</facilityState>
+      <lineOfBusiness>PartB</lineOfBusiness>
+    </application>
+    <credential>
+      <userId>DS77915</userId>
+      <password>somepass</password>
+    </credential>
+    <clerkCredential>
+      <userId>ABCD</userId>
+      <password>clerkpass</password>
+    </clerkCredential>
+  </medicareMainframe>
+  <searchCriteria>
+    <npi>123456789</npi>
+    <hic>123456789A</hic>
+    <fromDate>2000-01-01</fromDate>
+    <toDate>2020-01-01</toDate>
+    <hcpcs>A1234</hcpcs>
+    <icn>1234567890123</icn>
+  </searchCriteria>
+</claimStatusInquiryRequest>
