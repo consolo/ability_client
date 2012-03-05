@@ -12,7 +12,7 @@ class AbilityClientTest < Test::Unit::TestCase
 
     services_endpoint = "https://portal.abilitynetwork.com/portal/services"
 
-    stub_request(:get, services_endpoint).to_return(:body => load_xml("service_list_response"))
+    stub_request(:get, services_endpoint).to_return(:body => response_xml(:service_list))
 
     assert_equal [
       { :id => 1,
@@ -36,7 +36,7 @@ class AbilityClientTest < Test::Unit::TestCase
 
   def test_claim_inquiry
     claim_endpoint = "https://www.abilitynetwork.com/portal/seapi/services/DDEClaimInquiry/#{@service_id}"
-    stub_request(:post, claim_endpoint).with(:body => load_xml("claim_inquiry_request")).to_return(:body => load_xml("claim_inquiry_response"))
+    stub_request(:post, claim_endpoint).with(:body => request_xml(:claim_inquiry)).to_return(:body => response_xml(:claim_inquiry))
 
     assert_equal([
       { :npi => "123457890",
@@ -86,7 +86,7 @@ class AbilityClientTest < Test::Unit::TestCase
 
   def test_eligibility_inquiry
     eligibility_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/DDEEligibilityInquiry/#{@service_id}"
-    stub_request(:post, eligibility_endpoint).with(:body => load_xml("eligibility_inquiry_request")).to_return(:body => load_xml("eligibility_inquiry_response"))
+    stub_request(:post, eligibility_endpoint).with(:body => request_xml(:eligibility_inquiry)).to_return(:body => response_xml(:eligibility_inquiry))
 
     assert_equal({
       :fiss_eligibility => {
@@ -223,7 +223,7 @@ class AbilityClientTest < Test::Unit::TestCase
 
   def test_claim_status_inquiry
     claim_status_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/PPTNClaimStatusInquiry/#{@service_id}"
-    stub_request(:post, claim_status_endpoint).with(:body => load_xml("claim_status_inquiry_request")).to_return(:body => load_xml("claim_status_inquiry_response"))
+    stub_request(:post, claim_status_endpoint).with(:body => request_xml(:claim_status_inquiry)).to_return(:body => response_xml(:claim_status_inquiry))
 
     assert_equal({
       :beneficiary => {
@@ -293,18 +293,29 @@ class AbilityClientTest < Test::Unit::TestCase
 
   def test_change_password
     change_password_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/PasswordChange/#{@service_id}"
-    stub_request(:post, change_password_endpoint).with(:body => load_xml("password_change_request")).to_return(:body => load_xml("password_change_response"))
+    stub_request(:post, change_password_endpoint).with(:body => request_xml(:password_change)).to_return(:body => response_xml(:password_change))
 
     new_password = "NewPwd01"
 
-    @client.change_password(@service_id, new_password, :facility_state => 'OK', :line_of_business => 'PartB')
+    @client.change_password(@service_id, new_password, :facility_state => "OK", :line_of_business => "PartB")
     assert_equal(new_password, @client.password)
   end
 
   private
 
-  def load_xml(name)
-    xml_path = File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "#{name}.xml"))
+  # Load a request XML fixture
+  def request_xml(fixture)
+    load_xml(fixture.to_s, "request")
+  end
+
+  # Load a response XML fixture
+  def response_xml(fixture)
+    load_xml(fixture.to_s, "response")
+  end
+
+  # Load XML from the API docs
+  def load_xml(dir, name)
+    xml_path = File.expand_path(File.join(File.dirname(__FILE__), "..", "fixtures", dir, "#{name}.xml"))
     File.read(File.new(xml_path))
   end
 
