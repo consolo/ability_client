@@ -1,2 +1,10 @@
 module Ability; end
-require File.expand_path(File.join(File.dirname(__FILE__), 'ability', 'client'))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "version"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "helpers", "xml_helpers"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "helpers", "eligibility_helpers"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "client"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "client", "eligibility_inquiry"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "client", "claim_inquiry"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "client", "claim_status_inquiry"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "client", "change_password"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "client", "service_list"))
