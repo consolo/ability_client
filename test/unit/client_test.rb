@@ -84,12 +84,11 @@ class AbilityClientTest < Test::Unit::TestCase
     ))
   end
 
-  def test_eligibility_inquiry
-    eligibility_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/DDEEligibilityInquiry/#{@service_id}"
-    stub_request(:post, eligibility_endpoint).with(:body => request_xml(:eligibility_inquiry)).to_return(:body => response_xml(:eligibility_inquiry))
+  def test_eligibility_inquiry_fss0_1751
+    stub_eligibility_request(:fss0_1751)
 
     assert_equal({
-      :fiss_eligibility => {
+      :screen_1751 => {
         :beneficiary => {
           :hic => "1234567890A",
           :last_name => "Doe",
@@ -130,95 +129,337 @@ class AbilityClientTest < Test::Unit::TestCase
           :interim_date_indicator => "Y"
         },
         :reason_codes => ["U1231","21349"]
+      }
+    }, eligibility_inquiry(:fss0_1751))
+  end
+
+  def test_eligibility_inquiry_fss0_1752
+
+    stub_eligibility_request(:fss0_1752)
+
+    assert_equal({:screen_1752 => {
+      :part_b => {
+        :service_year => "09",
+        :medical_expense => 200.00,
+        :remaining_blood_pints => 3,
+        :psychiatric_expense => 200.00,
       },
+      :mco_plans => [
+        {
+          :type => "sometype",
+          :code => "34321",
+          :option_code => "32",
+          :effective_date => Date.parse("2004-06-15"),
+          :termination_date => Date.parse("2012-03-01"),
+        }
+      ],
+      :hospice => {
+        :period => 1,
+        :first_provider_start_date => Date.parse("2004-06-15"),
+        :first_provider_id => "3203941",
+        :first_intermediary_id => "A4352",
+        :first_owner_change_start_date => Date.parse("2004-06-15"),
+        :first_owner_change_provider_id => "3234213",
+        :first_owner_change_intermediary_id => "321341",
+        :second_provider_start_date => Date.parse("2004-06-15"),
+        :second_provider_id => "3113323",
+        :second_intermediary_id => "230392",
+        :second_owner_change_start_date => Date.parse("2004-06-15"),
+        :second_owner_change_provider_id => "239092",
+        :second_owner_change_intermediary_id => "30293",
+        :termination_date => Date.parse("2012-03-01"),
+        :first_billed_date => Date.parse("2004-06-15"),
+        :last_billed_date => Date.parse("2012-03-01"),
+        :days_billed => 20,
+        :revocation_indicator => 2
+      }
+    }}, eligibility_inquiry(:fss0_1752))
+  end
+
+  def test_eligibility_inquiry_fss0_175J 
+    stub_eligibility_request(:fss0_175J)
+
+    assert_equal({:screen_175J => {
       :preventative_services => [
         {
           :category => "CARD",
-          :hcpcs => "939023",
-          :technical_date => "03042010",
-          :professional_date => "04042010"
-        },
-        {
-          :category => "IPPE",
-          :hcpcs => "G0368",
+          :hcpcs => "G1234",
           :technical_date => "0000",
           :professional_date => "SRV"
         }
-      ],
-      :cwf_eligibility => {
-        :current_entitlement => {
-          :part_a => {
-            :effective_date => Date.parse("2004-06-15"),
-            :termination_date => Date.parse("2004-06-15")
-          },
-          :part_b => {
-            :effective_date => Date.parse("2004-06-15"),
-            :termination_date => Date.parse("2004-06-15")
-          }
+      ]
+    }}, eligibility_inquiry(:fss0_175J))
+  end
+
+  def test_eligibility_inquiry_fss0_1755
+    stub_eligibility_request(:fss0_1755)
+
+    assert_equal({:screen_1755 => {
+      :current_entitlement => {
+        :part_a => {
+          :effective_date => Date.parse("2004-06-15"),
+          :termination_date => Date.parse("2004-06-15")
         },
-        :prior_entitlement => {
-          :part_a => {
-            :effective_date => Date.parse("2000-06-15"),
-            :termination_date => Date.parse("2000-06-15")
-          },
-          :part_b => {
-            :effective_date => Date.parse("2000-06-15"),
-            :termination_date => Date.parse("2000-06-15")
-          }
-        },
-        :lifetime => {
-          :remaining_reserve_days => 60,
-          :psychiatric_days_available => 190
-        },
-        :current_benefit_period => {
-          :first_bill_date => Date.parse("2004-06-15"),
-          :last_bill_date => Date.parse("2004-06-15"),
-          :hospital_full_days => 75,
-          :hospital_part_days => 43,
-          :snf_full_days => 25,
-          :snf_part_days => 15,
-          :remaining_inpatient_deductible => 1555.75,
-          :remaining_blood_pints => 3
-        },
-        :prior_benefit_period => {
-          :first_bill_date => Date.parse("2000-06-15"),
-          :last_bill_date => Date.parse("2000-06-15"),
-          :hospital_full_days => 95,
-          :hospital_part_days => 63,
-          :snf_full_days => 45,
-          :snf_part_days => 35,
-          :remaining_inpatient_deductible => 3555.75,
-          :remaining_blood_pints => 5
-        },
-        :current_part_b => {
-          :service_year => "10",
-          :remaining_blood_pints => 7,
-          :remaining_psychiatric => 111.11,
-          :remaining_physical_therapy => 211.11,
-          :remaining_occupational_therapy => 311.11
-        },
-        :prior_part_b => {
-          :service_year => "09",
-          :remaining_blood_pints => 9,
-          :remaining_psychiatric => 411.11,
-          :remaining_physical_therapy => 511.11,
-          :remaining_occupational_therapy => 611.11
+        :part_b => {
+          :effective_date => Date.parse("2004-06-15"),
+          :termination_date => Date.parse("2004-06-15")
         }
+      },
+      :prior_entitlement => {
+        :part_a => {
+          :effective_date => Date.parse("2000-06-15"),
+          :termination_date => Date.parse("2000-06-15")
+        },
+        :part_b => {
+          :effective_date => Date.parse("2000-06-15"),
+          :termination_date => Date.parse("2000-06-15")
+        }
+      },
+      :lifetime => {
+        :remaining_reserve_days => 60,
+        :psychiatric_days_available => 190
+      },
+      :current_benefit_period => {
+        :first_bill_date => Date.parse("2004-06-15"),
+        :last_bill_date => Date.parse("2004-06-15"),
+        :hospital_full_days => 75,
+        :hospital_part_days => 43,
+        :snf_full_days => 25,
+        :snf_part_days => 15,
+        :remaining_inpatient_deductible => 1555.75,
+        :remaining_blood_pints => 3
+      },
+      :prior_benefit_period => {
+        :first_bill_date => Date.parse("2000-06-15"),
+        :last_bill_date => Date.parse("2000-06-15"),
+        :hospital_full_days => 95,
+        :hospital_part_days => 63,
+        :snf_full_days => 45,
+        :snf_part_days => 35,
+        :remaining_inpatient_deductible => 3555.75,
+        :remaining_blood_pints => 5
+      },
+      :current_part_b => {
+        :service_year => "10",
+        :remaining_blood_pints => 7,
+        :remaining_psychiatric => 111.11,
+        :remaining_physical_therapy => 211.11,
+        :remaining_occupational_therapy => 311.11
+      },
+      :prior_part_b => {
+        :service_year => "09",
+        :remaining_blood_pints => 9,
+        :remaining_psychiatric => 411.11,
+        :remaining_physical_therapy => 511.11,
+        :remaining_occupational_therapy => 611.11
       }
-    }, @client.eligibility_inquiry(@service_id,
-      :facility_state => "OH",
-      :line_of_business => "PartA",
-      :fiss_eligibility => true,
-      :preventative_services => true,
-      :cwf_eligibility => true,
-      :beneficiary => {
-        :hic => "123456789A",
-        :last_name => "Doe",
-        :first_name => "John",
-        :sex => "M",
-        :date_of_birth => Date.parse("1925-05-08")
+    }}, eligibility_inquiry(:fss0_1755))
+  end
+
+  def test_eligibility_inquiry_fss0_1756
+    stub_eligibility_request(:fss0_1756)
+
+    assert_equal({:screen_1756 => {
+      :data_indicator => "Y",
+      :plan_enrollment_code => 10,
+      :current_mco_plan => {
+        :type => "TYPE1",
+        :code => "30",
+        :option_code => "20",
+        :effective_date => Date.parse("2000-06-03"),
+        :termination_date => Date.parse("2012-02-01")
+      },
+      :prior_mco_plan => {
+        :type => "TYPE1",
+        :code => "30",
+        :option_code => "20",
+        :effective_date => Date.parse("2000-06-03"),
+        :termination_date => Date.parse("2012-02-01")
+      },
+      :other_entitlement_code => "XCS22",
+      :other_entitlement_date => Date.parse("2000-06-15"),
+      :esrd_code => 20,
+      :esrd_date => Date.parse("2000-06-15"),
+      :psychiatric => {
+        :remaining_days => 190,
+        :pre_entitlement_days_used => 21,
+        :discharge_date => Date.parse("2004-06-15"),
+        :interim_date_indicator => "Y"
       }
-    ))
+    }}, eligibility_inquiry(:fss0_1756))
+  end
+
+  def test_eligibility_inquiry_fss0_1757
+    stub_eligibility_request(:fss0_1757)
+
+    assert_equal({:screen_1757 => {
+      :transplants => [
+        {
+          :covered => true,
+          :type => "TT32",
+          :discharge_date => Date.parse("2012-03-01")
+        }
+      ],
+      :home_health_episode_dates =>  {
+        :start_date => Date.parse("2012-03-01"),
+        :end_date => Date.parse("2012-03-20"),
+        :earliest_bill_accepted_date => Date.parse("2012-03-01"),
+        :latest_bill_accepted_date => Date.parse("2012-03-20")
+      }
+    }}, eligibility_inquiry(:fss0_1757))
+  end
+
+  def test_eligibility_inquiry_fss0_1758_175C
+    stub_eligibility_request(:fss0_1758_175C)
+
+    assert_equal({:screen_1758_175C => {
+      :period_1 => {
+        :period => 1,
+        :first_provider_start_date => Date.parse("2004-06-15"),
+        :first_provider_id => "3203941",
+        :first_intermediary_id => "A4352",
+        :first_owner_change_start_date => Date.parse("2004-06-15"),
+        :first_owner_change_provider_id => "3234213",
+        :first_owner_change_intermediary_id => "321341",
+        :second_provider_start_date => Date.parse("2004-06-15"),
+        :second_provider_id => "3113323",
+        :second_intermediary_id => "230392",
+        :second_owner_change_start_date => Date.parse("2004-06-15"),
+        :second_owner_change_provider_id => "239092",
+        :second_owner_change_intermediary_id => "30293",
+        :termination_date => Date.parse("2012-03-01"),
+        :first_billed_date => Date.parse("2004-06-15"),
+        :last_billed_date => Date.parse("2012-03-01"),
+        :days_billed => 20,
+        :revocation_indicator => 2
+      },
+      :period_2 => {
+        :period => 2,
+        :first_provider_start_date => Date.parse("2004-06-15"),
+        :first_provider_id => "3203941",
+        :first_intermediary_id => "A4352",
+        :first_owner_change_start_date => Date.parse("2004-06-15"),
+        :first_owner_change_provider_id => "3234213",
+        :first_owner_change_intermediary_id => "321341",
+        :second_provider_start_date => Date.parse("2004-06-15"),
+        :second_provider_id => "3113323",
+        :second_intermediary_id => "230392",
+        :second_owner_change_start_date => Date.parse("2004-06-15"),
+        :second_owner_change_provider_id => "239092",
+        :second_owner_change_intermediary_id => "30293",
+        :termination_date => Date.parse("2012-03-01"),
+        :first_billed_date => Date.parse("2004-06-15"),
+        :last_billed_date => Date.parse("2012-03-01"),
+        :days_billed => 20,
+        :revocation_indicator => 2
+      },
+      :period_3 => {
+        :period => 3,
+        :first_provider_start_date => Date.parse("2004-06-15"),
+        :first_provider_id => "3203941",
+        :first_intermediary_id => "A4352",
+        :first_owner_change_start_date => Date.parse("2004-06-15"),
+        :first_owner_change_provider_id => "3234213",
+        :first_owner_change_intermediary_id => "321341",
+        :second_provider_start_date => Date.parse("2004-06-15"),
+        :second_provider_id => "3113323",
+        :second_intermediary_id => "230392",
+        :second_owner_change_start_date => Date.parse("2004-06-15"),
+        :second_owner_change_provider_id => "239092",
+        :second_owner_change_intermediary_id => "30293",
+        :termination_date => Date.parse("2012-03-01"),
+        :first_billed_date => Date.parse("2004-06-15"),
+        :last_billed_date => Date.parse("2012-03-01"),
+        :days_billed => 20,
+        :revocation_indicator => 2
+      },
+      :period_4 => {
+        :period => 4,
+        :first_provider_start_date => Date.parse("2004-06-15"),
+        :first_provider_id => "3203941",
+        :first_intermediary_id => "A4352",
+        :first_owner_change_start_date => Date.parse("2004-06-15"),
+        :first_owner_change_provider_id => "3234213",
+        :first_owner_change_intermediary_id => "321341",
+        :second_provider_start_date => Date.parse("2004-06-15"),
+        :second_provider_id => "3113323",
+        :second_intermediary_id => "230392",
+        :second_owner_change_start_date => Date.parse("2004-06-15"),
+        :second_owner_change_provider_id => "239092",
+        :second_owner_change_intermediary_id => "30293",
+        :termination_date => Date.parse("2012-03-01"),
+        :first_billed_date => Date.parse("2004-06-15"),
+        :last_billed_date => Date.parse("2012-03-01"),
+        :days_billed => 20,
+        :revocation_indicator => 2
+      }
+    }}, eligibility_inquiry(:fss0_1758_175C))
+  end
+
+  def test_eligibility_inquiry_fss0_175K
+    stub_eligibility_request(:fss0_175K)
+
+    assert_equal({:screen_175K => {
+      :counseling_periods => [
+        {
+          :year => 2012,
+          :total_sessions => 4
+        }
+      ],
+      :counseling_sessions => [
+        {
+          :hcpcs => "G1234",
+          :from => Date.parse("2012-03-01"),
+          :thru => Date.parse("2012-03-15"),
+          :period => 2,
+          :quantity => 1,
+          :type => "T239"
+        }
+      ]
+    }}, eligibility_inquiry(:fss0_175K))
+  end
+
+  def test_eligibility_inquiry_fss0_1759
+    stub_eligibility_request(:fss0_1759)
+
+    assert_equal({:screen_1759 => {
+      :msps => [
+        {
+          :effective_date => Date.parse("2012-03-01"),
+          :termination_date => Date.parse("2012-03-15"),
+          :code => "C2039",
+          :subscriber_name => "Subscriber",
+          :policy_number => "XYZ123",
+          :patient_relationship => "R1",
+          :remarks_codes => "XX21",
+          :insurer => {
+            :name => "XYZ Insurance",
+            :address_1 => "211 Test Street",
+            :address_2 => "Suite 111",
+            :city => "City",
+            :state => "State",
+            :zip_code => "40233"
+          },
+          :group => {
+            :name => "GR321",
+            :number => "G30291"
+          }
+        }
+      ]
+    }}, eligibility_inquiry(:fss0_1759))
+  end
+
+  def test_eligibility_inquiry_fss0_175L
+    stub_eligibility_request(:fss0_175L)
+
+    assert_equal({:screen_175L => {
+      :home_health_certifications => [
+        {
+          :hcpcs => "G1234",
+          :from_date => Date.parse("2012-03-01")
+        }
+      ]
+    }}, eligibility_inquiry(:fss0_175L))
   end
 
   def test_claim_status_inquiry
@@ -282,7 +523,6 @@ class AbilityClientTest < Test::Unit::TestCase
       :hcpcs => "A1234",
       :icn => "1234567890123"
     ))
-    
   end
 
   def test_generate_password
@@ -303,20 +543,49 @@ class AbilityClientTest < Test::Unit::TestCase
 
   private
 
+  # Stub an eligibility request
+  def stub_eligibility_request(detail)
+    eligibility_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/DDEEligibilityInquiry/#{@service_id}"
+    stub_request(:post, eligibility_endpoint).with(:body => request_xml(:eligibility_inquiry, detail)).to_return(:body => response_xml(:eligibility_inquiry, detail))
+  end
+
+  # Eligibility inquiry
+  def eligibility_inquiry(detail)
+    @client.eligibility_inquiry(@service_id, 
+      :facility_state => "OH",
+      :line_of_business => "PartA",
+      :details => [ detail ],
+      :beneficiary => {
+        :hic => "123456789A",
+        :last_name => "Doe",
+        :first_name => "John",
+        :sex => "M",
+        :date_of_birth => Date.parse("1925-05-08")
+      }
+    )
+  end
+
   # Load a request XML fixture
-  def request_xml(fixture)
-    load_xml(fixture.to_s, "request")
+  def request_xml(fixture, sub_fixture = nil)
+    load_xml(fixture, sub_fixture, :request)
   end
 
   # Load a response XML fixture
-  def response_xml(fixture)
-    load_xml(fixture.to_s, "response")
+  def response_xml(fixture, sub_fixture = nil)
+    load_xml(fixture, sub_fixture, :response)
   end
 
-  # Load XML from the API docs
-  def load_xml(dir, name)
-    xml_path = File.expand_path(File.join(File.dirname(__FILE__), "..", "fixtures", dir, "#{name}.xml"))
-    File.read(File.new(xml_path))
+  # Load XML from fixtures
+  def load_xml(fixture, sub_fixture = nil, name)
+    path = File.expand_path(File.join(File.dirname(__FILE__), "..", "fixtures", fixture.to_s))
+    
+    if sub_fixture
+      path = File.expand_path(File.join(path, sub_fixture.to_s))
+    end
+
+    xml_file = File.expand_path(File.join(path, "#{name.to_s}.xml"))
+
+    File.read(File.new(xml_file))
   end
 
 end

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eligibilityInquiryResponse xmlns="http://www.visionshareinc.com/seapi/2008-09-22">
+  <eligibility>
+    <screen1751>
+      <beneficiary>
+        <hic>1234567890A</hic>
+        <lastName>Doe</lastName>
+        <firstName>John</firstName>
+        <middleInitial>Z</middleInitial>
+        <sex>M</sex>
+        <dateOfBirth>1942-01-07</dateOfBirth>
+        <dateOfDeath>2010-01-07</dateOfDeath>
+        <address1>123 street</address1>
+        <address2>city</address2>
+        <address3>state</address3>
+        <zipCode>987654321</zipCode>
+      </beneficiary>
+      <currentEntitlement>
+        <partAEffectiveDate>2004-06-15</partAEffectiveDate>
+        <partATerminationDate>2004-06-15</partATerminationDate>
+        <partBEffectiveDate>2004-06-15</partBEffectiveDate>
+        <partBTerminationDate>2004-06-15</partBTerminationDate>
+      </currentEntitlement>
+      <currentBenefitPeriodData>
+        <firstBillDate>2004-06-15</firstBillDate>
+        <lastBillDate>2004-06-15</lastBillDate>
+        <hospitalFullDays>75</hospitalFullDays>
+        <hospitalPartDays>43</hospitalPartDays>
+        <snfFullDays>25</snfFullDays>
+        <snfPartDays>15</snfPartDays>
+        <inpatientDeductibleRemaining>1555.75</inpatientDeductibleRemaining>
+        <bloodPintsRemaining>3</bloodPintsRemaining>
+      </currentBenefitPeriodData>
+      <psychiatric>
+        <daysRemaining>190</daysRemaining>
+        <preEntitlementDaysUsed>21</preEntitlementDaysUsed>
+        <dischargeDate>2004-06-15</dischargeDate>
+        <interimDateIndicator>Y</interimDateIndicator>
+      </psychiatric>
+      <reasonCodes>
+        <reasonCode>U1231</reasonCode>
+        <reasonCode>21349</reasonCode>
+      </reasonCodes>
+    </screen1751>
+  </eligibility>
+</eligibilityInquiryResponse>

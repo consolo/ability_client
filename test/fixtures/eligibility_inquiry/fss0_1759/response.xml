@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eligibilityInquiryResponse xmlns="http://www.visionshareinc.com/seapi/2008-09-22">
+  <eligibility>
+    <screen1759>
+      <mspData>
+        <effectiveDate>2012-03-01</effectiveDate>
+        <terminationDate>2012-03-15</terminationDate>
+        <mspCode>C2039</mspCode>
+        <subscriberName>Subscriber</subscriberName>
+        <policyNumber>XYZ123</policyNumber>
+        <patientRelationship>R1</patientRelationship>
+        <remarksCodes>XX21</remarksCodes>
+        <insurerName>XYZ Insurance</insurerName>
+        <insurerAddress1>211 Test Street</insurerAddress1>
+        <insurerAddress2>Suite 111</insurerAddress2>
+        <insurerCity>City</insurerCity>
+        <insurerState>State</insurerState>
+        <insurerZipCode>40233</insurerZipCode>
+        <groupName>GR321</groupName>
+        <groupNumber>G30291</groupNumber>
+      </mspData>
+    </screen1759>
+  </eligibility>
+</eligibilityInquiryResponse>

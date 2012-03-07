@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eligibilityInquiryResponse xmlns="http://www.visionshareinc.com/seapi/2008-09-22">
+  <eligibility>
+    <screen175K>
+      <counselingPeriods>
+        <period>
+          <year>2012</year>
+          <totalSessions>4</totalSessions>
+        </period>
+      </counselingPeriods>
+      <counselingSessions>
+        <session>
+          <hcpcs>G1234</hcpcs>
+          <from>2012-03-01</from>
+          <thru>2012-03-15</thru>
+          <period>2</period>
+          <quantity>1</quantity>
+          <type>T239</type>
+        </session>
+      </counselingSessions>
+    </screen175K>
+  </eligibility>
+</eligibilityInquiryResponse>

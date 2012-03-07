@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eligibilityInquiryResponse xmlns="http://www.visionshareinc.com/seapi/2008-09-22">
+  <eligibility>
+    <screen1756>
+      <dataIndicator>Y</dataIndicator>
+      <planEnrollmentCode>10</planEnrollmentCode>
+      <currentMcoPlan>
+        <type>TYPE1</type>
+        <idCode>30</idCode>
+        <optionCode>20</optionCode>
+        <effectiveDate>2000-06-03</effectiveDate>
+        <terminationDate>2012-02-01</terminationDate>
+      </currentMcoPlan>
+      <priorMcoPlan>
+        <type>TYPE1</type>
+        <idCode>30</idCode>
+        <optionCode>20</optionCode>
+        <effectiveDate>2000-06-03</effectiveDate>
+        <terminationDate>2012-02-01</terminationDate>
+      </priorMcoPlan>
+      <otherEntitlementCode>XCS22</otherEntitlementCode>
+      <otherEntitlementDate>2000-06-15</otherEntitlementDate>
+      <esrdCode>20</esrdCode>
+      <esrdDate>2000-06-15</esrdDate>
+      <psychiatric>
+        <daysRemaining>190</daysRemaining>
+        <preEntitlementDaysUsed>21</preEntitlementDaysUsed>
+        <dischargeDate>2004-06-15</dischargeDate>
+        <interimDateIndicator>Y</interimDateIndicator>
+      </psychiatric>
+    </screen1756>
+  </eligibility>
+</eligibilityInquiryResponse>

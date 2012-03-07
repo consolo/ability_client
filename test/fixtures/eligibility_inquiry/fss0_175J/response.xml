@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eligibilityInquiryResponse xmlns="http://www.visionshareinc.com/seapi/2008-09-22">
+  <eligibility>
+    <screen175J>
+      <preventativeService>
+        <category>CARD</category>
+        <hcpcs>G1234</hcpcs>
+        <technicalDate>0000</technicalDate>
+        <professionalDate>SRV</professionalDate>
+      </preventativeService>
+    </screen175J>
+  </eligibility>
+</eligibilityInquiryResponse>
