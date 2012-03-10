@@ -4,6 +4,7 @@ require "rexml/document"
 
 # Class for interacting with the ABILITY ACCESS API.
 class Ability::Client
+  include Ability::Helpers::XmlHelpers
 
   attr_accessor :ssl_client_cert,
                 :ssl_client_key,
@@ -18,13 +19,13 @@ class Ability::Client
     Ability::VERSION
   end
 
-  def initialize(*args)
+  def initialize(username, password, *args)
     opts = args_to_hash(*args)
     @ssl_client_cert = opts[:ssl_client_cert]
     @ssl_client_key = opts[:ssl_client_key]
     @ssl_ca = opts[:ssl_ca]
-    @user = opts[:user]
-    @password = opts[:password]
+    @user = username
+    @password = password
     @facility_state = opts[:facility_state]
     @line_of_business = opts[:line_of_business]
     @service_id = opts[:service_id]
@@ -32,45 +33,57 @@ class Ability::Client
 
   # Returns a list of services.
   def services
-    service_list = Ability::Client::ServiceList.new(self)
-    service_list.submit
+    request = Ability::ServiceList::Request.new
+    response = Ability::ServiceList::Response.new(xml(get(request.endpoint)))
+    response.parsed
   end
 
   # Returns the results of a claim inquiry search
   def claim_inquiry(service_id, *args)
     opts = args_to_hash(*args)
-    claim_inquiry = Ability::Client::ClaimInquiry.new(self, service_id, opts)
-    claim_inquiry.submit
+    request = Ability::ClaimInquiry::Request.new(user, password, service_id, opts)
+    doc = xml(post(request.endpoint, request.xml))
+    response = Ability::ClaimInquiry::Response.new(doc, opts)
+    response.parsed
   end
 
   # Return the results of an eligibility inquiry
   def eligibility_inquiry(service_id, *args)
     opts = args_to_hash(*args)
-    eligibility_inquiry = Ability::Client::EligibilityInquiry.new(self, service_id, opts)
-    eligibility_inquiry.submit
+    request = Ability::EligibilityInquiry::Request.new(user, password, service_id, opts)
+    doc = xml(post(request.endpoint, request.xml))
+    response = Ability::EligibilityInquiry::Response.new(doc, opts)
+    response.parsed
   end
 
   # Return the results of a claim status inquiry
   def claim_status_inquiry(service_id, *args)
     opts = args_to_hash(*args)
-    claim_status_inquiry = Ability::Client::ClaimStatusInquiry.new(self, service_id, opts)
-    claim_status_inquiry.submit
+    request = Ability::ClaimStatusInquiry::Request.new(user, password, service_id, opts)
+    doc = xml(post(request.endpoint, request.xml))
+    response = Ability::ClaimStatusInquiry::Response.new(doc, opts)
+    response.parsed
   end
 
   # Generate a password
   def generate_password(service_id)
-    generate_password_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/PasswordGenerate/#{service_id}"
-    post(generate_password_endpoint)
+    request = Ability::PasswordGenerate::Request.new(service_id)
+    post(request.endpoint)
   end
 
   # Change a password or clerk password
   def change_password(service_id, new_password, *args)
     opts = args_to_hash(*args)
-    change_password = Ability::Client::ChangePassword.new(self, service_id, new_password, opts)
-    change_password.submit
+    request = Ability::ChangePassword::Request.new(user, password, service_id, new_password, opts)
+    post(request.endpoint, request.xml)
+
+    # Change client password unless clerk password is being changed
+    @password = new_password unless opts[:clerk]
   end
   
-  def parse_xml(raw)
+  private
+
+  def xml(raw)
     REXML::Document.new(raw)
   end
 
@@ -91,10 +104,15 @@ class Ability::Client
 
     rest_client_opts[:payload] = payload if payload
 
-    RestClient::Request.execute(rest_client_opts)
+    RestClient::Request.execute(rest_client_opts) do |response, request, result, &block|
+      if [400,401,404,405,415,500,503].include?(response.code)
+        e = Error::Response.new(response.body)
+        e.raise
+      else
+        response.return!(request, result, &block)
+      end
+    end
   end
-
-  private
 
   def args_to_hash(*args)
     Hash[*args.flatten]

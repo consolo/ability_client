@@ -4,7 +4,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "lib", "a
 class AbilityClientTest < Test::Unit::TestCase
 
   def setup
-    @client = Ability::Client.new(:user => "DS77915", :password => "somepass")
+    @client = Ability::Client.new("DS77915", "somepass")
     @service_id = "80"
   end
 
