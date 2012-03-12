@@ -5,7 +5,7 @@ class AbilityClientTest < Test::Unit::TestCase
 
   def setup
     @client = Ability::Client.new("DS77915", "somepass")
-    @service_id = "80"
+    @service_id = 80
   end
 
   def test_services
