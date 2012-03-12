@@ -6,29 +6,25 @@ require "rexml/document"
 class Ability::Client
   include Ability::Helpers::XmlHelpers
 
-  attr_accessor :ssl_client_cert,
-                :ssl_client_key,
-                :ssl_ca,
-                :user,
+  attr_accessor :user,
                 :password,
-                :facility_state,
-                :line_of_business,
-                :service_id
+                :ssl_client_cert,
+                :ssl_client_key,
+                :ssl_ca_file
 
   def self.version
     Ability::VERSION
   end
 
-  def initialize(username, password, *args)
-    opts = args_to_hash(*args)
-    @ssl_client_cert = opts[:ssl_client_cert]
-    @ssl_client_key = opts[:ssl_client_key]
-    @ssl_ca = opts[:ssl_ca]
+  def initialize(username, password, opts = nil)
     @user = username
     @password = password
-    @facility_state = opts[:facility_state]
-    @line_of_business = opts[:line_of_business]
-    @service_id = opts[:service_id]
+
+    if opts
+      @ssl_client_cert = opts[:ssl_client_cert]
+      @ssl_client_key = opts[:ssl_client_key]
+      @ssl_ca_file = opts[:ssl_ca_file]
+    end
   end
 
   # Returns a list of services.
@@ -101,6 +97,15 @@ class Ability::Client
       :url => url,
       :accept => :xml
     }
+
+    if ssl_client_cert && ssl_client_key && ssl_ca_file
+      rest_client_opts.merge!({
+        :ssl_ca_file => ssl_ca_file,
+        :ssl_client_key => ssl_client_key,
+        :ssl_client_cert => ssl_client_cert,
+        :verify_ssl => true
+      })
+    end
 
     rest_client_opts[:payload] = payload if payload
 
