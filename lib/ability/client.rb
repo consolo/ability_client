@@ -105,9 +105,11 @@ class Ability::Client
     rest_client_opts[:payload] = payload if payload
 
     RestClient::Request.execute(rest_client_opts) do |response, request, result, &block|
+      # If an error code is in the response, raise a ResponseError exception.
+      # Otherwise, return the response normally.
       if [400,401,404,405,415,500,503].include?(response.code)
-        e = Error::Response.new(response.body)
-        e.raise
+        response = Ability::Error::Response.new(xml(response.body), response)
+        response.error.raise
       else
         response.return!(request, result, &block)
       end

@@ -541,6 +541,15 @@ class AbilityClientTest < Test::Unit::TestCase
     assert_equal(new_password, @client.password)
   end
 
+  def raises_errors
+    change_password_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/PasswordChange/#{@service_id}"
+    stub_request(:post, change_password_endpoint).with(:body => request_xml(:password_change)).to_return(:status => 400, :body => error_xml(:password_expired))
+
+    assert_raises(Ability::ResponseError) do
+      @client.change_password(@service_id, new_password, :facility_state => "OK", :line_of_business => "PartB")
+    end
+  end
+
   private
 
   # Stub an eligibility request

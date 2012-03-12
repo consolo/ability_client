@@ -2,6 +2,8 @@ module Ability; end
 require File.expand_path(File.join(File.dirname(__FILE__), "ability", "version"))
 require File.expand_path(File.join(File.dirname(__FILE__), "ability", "helpers", "xml_helpers"))
 require File.expand_path(File.join(File.dirname(__FILE__), "ability", "helpers", "eligibility_helpers"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "error"))
+require File.expand_path(File.join(File.dirname(__FILE__), "ability", "exceptions"))
 require File.expand_path(File.join(File.dirname(__FILE__), "ability", "client"))
 require File.expand_path(File.join(File.dirname(__FILE__), "ability", "request"))
 require File.expand_path(File.join(File.dirname(__FILE__), "ability", "response"))
