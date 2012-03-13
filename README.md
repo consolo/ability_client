@@ -3,10 +3,9 @@ Ruby Ability Client
 
 ## INSTALL
 
-After cloning the repository, build the gem, then install it:
+Add it to your Gemfile:
 
-    gem build ability_client.gemspec
-    gem install ability_client-0.0.2.gem
+  gem "ability_client", :git => "git://github.com/consolo/ability_client.git"
 
 ## USAGE
 
