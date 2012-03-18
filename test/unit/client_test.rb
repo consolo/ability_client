@@ -10,7 +10,7 @@ class AbilityClientTest < Test::Unit::TestCase
 
   def test_services
 
-    services_endpoint = "https://portal.abilitynetwork.com/portal/services"
+    services_endpoint = "https://access.abilitynetwork.com/portal/services"
 
     stub_request(:get, services_endpoint).to_return(:body => response_xml(:service_list))
 
