@@ -5,7 +5,7 @@ Ruby Ability Client
 
 Add it to your Gemfile:
 
-  gem "ability_client", :git => "git://github.com/consolo/ability_client.git", :required => "ability"
+    gem "ability_client", :git => "git://github.com/consolo/ability_client.git", :required => "ability"
 
 ## USAGE
 
