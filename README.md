@@ -5,16 +5,14 @@ Ruby Ability Client
 
 Add it to your Gemfile:
 
-  gem "ability_client", :git => "git://github.com/consolo/ability_client.git"
+  gem "ability_client", :git => "git://github.com/consolo/ability_client.git", :required => "ability"
 
 ## USAGE
 
 The client can be initialized without SSL info, but it will most likely be necessary in production:
 
     client = Ability::Client.new("SomeUser", "SomePassword", {
-      :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read("cert.pem")),
-      :ssl_client_key   =>  OpenSSL::PKey::RSA.new(File.read("key.pem"), "passphrase, if any"),
-      :ssl_ca_file      =>  "ca_certificate.pem",
+      :ssl_client_cert => OpenSSL::PKCS12.new(File.read("somekey.p12"), "some pass phrase")
     })
 
 Most API calls like `eligibility_inquiry` will require a `service_id`. Query for service ids to get one:

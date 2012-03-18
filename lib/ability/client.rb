@@ -8,9 +8,7 @@ class Ability::Client
 
   attr_accessor :user,
                 :password,
-                :ssl_client_cert,
-                :ssl_client_key,
-                :ssl_ca_file
+                :ssl_client_cert
 
   def self.version
     Ability::VERSION
@@ -22,8 +20,6 @@ class Ability::Client
 
     if opts
       @ssl_client_cert = opts[:ssl_client_cert]
-      @ssl_client_key = opts[:ssl_client_key]
-      @ssl_ca_file = opts[:ssl_ca_file]
     end
   end
 
@@ -98,10 +94,8 @@ class Ability::Client
       :accept => :xml
     }
 
-    if ssl_client_cert && ssl_client_key && ssl_ca_file
+    if ssl_client_cert
       rest_client_opts.merge!({
-        :ssl_ca_file => ssl_ca_file,
-        :ssl_client_key => ssl_client_key,
         :ssl_client_cert => ssl_client_cert,
         :verify_ssl => true
       })
