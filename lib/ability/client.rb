@@ -104,7 +104,8 @@ class Ability::Client
       :accept => :xml,
       :headers => {
         "User-Agent" => self.class.user_agent,
-        "X-SEAPI-Version" => SEAPI_VERSION
+        "X-SEAPI-Version" => SEAPI_VERSION,
+        "Content-Type" => "text/xml"
       }
     }
 
