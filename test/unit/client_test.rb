@@ -10,7 +10,7 @@ class AbilityClientTest < Test::Unit::TestCase
 
   def test_services
 
-    services_endpoint = "https://access.abilitynetwork.com/portal/services"
+    services_endpoint = "https://access.abilitynetwork.com/portal/seapi/services"
 
     stub_request(:get, services_endpoint).to_return(:body => response_xml(:service_list))
 
@@ -548,6 +548,17 @@ class AbilityClientTest < Test::Unit::TestCase
     assert_raises(Ability::ResponseError) do
       @client.change_password(@service_id, new_password, :facility_state => "OK", :line_of_business => "PartB")
     end
+  end
+
+  def test_headers
+    change_password_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/PasswordChange/#{@service_id}"
+    stub_request(:post, change_password_endpoint).with(:body => request_xml(:password_change)).to_return(:body => response_xml(:password_change))
+    @client.change_password(@service_id, "NewPwd01", :facility_state => "OK", :line_of_business => "PartB")
+    assert_requested :post, change_password_endpoint,
+      :headers => {
+        "X-SEAPI-Version" => "1",
+        "User-Agent" => "Ruby Ability Client/#{Ability::Client.version}"
+      }
   end
 
   private

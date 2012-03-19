@@ -6,6 +6,8 @@ require "rexml/document"
 class Ability::Client
   include Ability::Helpers::XmlHelpers
 
+  SEAPI_VERSION = 1
+
   attr_accessor :user,
                 :password,
                 :ssl_client_cert,
@@ -14,6 +16,10 @@ class Ability::Client
 
   def self.version
     Ability::VERSION
+  end
+
+  def self.user_agent
+    "Ruby Ability Client/#{self.version}"
   end
 
   def initialize(username, password, opts = nil)
@@ -95,7 +101,11 @@ class Ability::Client
     rest_client_opts = {
       :method => method,
       :url => url,
-      :accept => :xml
+      :accept => :xml,
+      :headers => {
+        "User-Agent" => self.class.user_agent,
+        "X-SEAPI-Version" => SEAPI_VERSION
+      }
     }
 
     if ssl_client_cert && ssl_client_key && ssl_ca_file
