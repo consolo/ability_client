@@ -17,6 +17,15 @@ The client can be initialized without SSL info, but it will most likely be neces
       :ssl_ca_file     => "ca_certificate.pem",
     })
 
+The client can also use a PKCS#12 format key:
+
+    certificate = OpenSSL::PKCS12.new(File.read("somekey.p12"), "passphrase, if any")
+    client = Ability::Client.new("SomeUser", "SomePassword", {
+      :ssl_client_cert => certificate.certificate,
+      :ssl_client_key  => certificate.key,
+      :ssl_ca_file     => certificate.ca_certs
+    })
+
 Most API calls like `eligibility_inquiry` will require a `service_id`. Query for service ids to get one:
 
     client.services
