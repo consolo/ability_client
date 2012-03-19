@@ -6,13 +6,20 @@ module Ability
 
       # Create an Error instance from a REXML parsed XML document
       def from_doc(doc, response = nil)
-        error = elem(doc, "//error")
-        code = elem_text(error, "code")
-        message = elem_text(error, "message")
-        details = error.elements.to_a("details/detail").map { |d|
-          k, v = [d.attributes["key"], d.attributes["value"]]
-          { k.to_sym => v }
-        }
+        begin
+          error = elem(doc, "//error")
+          code = elem_text(error, "code")
+          message = elem_text(error, "message")
+          details = error.elements.to_a("details/detail").map { |d|
+            k, v = [d.attributes["key"], d.attributes["value"]]
+            { k.to_sym => v }
+          }
+        rescue
+          text = elem(doc, "//html")
+          code = elem_text(text, "//head/title").gsub(' ', '')
+          message = doc
+          details = nil
+        end
 
         new(code, message, details, response)
       end
