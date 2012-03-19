@@ -12,8 +12,8 @@ module Ability
         @opts = opts
       end
 
-      def endpoint
-        "https://access.abilitynetwork.com/portal/seapi/services/PasswordChange/#{service_id}"
+      def resource_name
+        "PasswordChange"
       end
 
       def xml

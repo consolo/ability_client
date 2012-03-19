@@ -7,6 +7,7 @@ class Ability::Client
   include Ability::Helpers::XmlHelpers
 
   SEAPI_VERSION = 1
+  API_ROOT      = "https://access.abilitynetwork.com/portal/seapi/services"
 
   attr_accessor :user,
                 :password,
@@ -36,7 +37,7 @@ class Ability::Client
   # Returns a list of services.
   def services
     request = Ability::ServiceList::Request.new
-    response = Ability::ServiceList::Response.new(xml(get(request.endpoint)))
+    response = Ability::ServiceList::Response.new(xml(get(API_ROOT)))
     response.parsed
   end
 
@@ -44,7 +45,7 @@ class Ability::Client
   def claim_inquiry(service_id, *args)
     opts = args_to_hash(*args)
     request = Ability::ClaimInquiry::Request.new(user, password, service_id, opts)
-    doc = xml(post(request.endpoint, request.xml))
+    doc = xml(post(endpoint(request), request.xml))
     response = Ability::ClaimInquiry::Response.new(doc, opts)
     response.parsed
   end
@@ -53,7 +54,7 @@ class Ability::Client
   def eligibility_inquiry(service_id, *args)
     opts = args_to_hash(*args)
     request = Ability::EligibilityInquiry::Request.new(user, password, service_id, opts)
-    doc = xml(post(request.endpoint, request.xml))
+    doc = xml(post(endpoint(request), request.xml))
     response = Ability::EligibilityInquiry::Response.new(doc, opts)
     response.parsed
   end
@@ -62,7 +63,7 @@ class Ability::Client
   def claim_status_inquiry(service_id, *args)
     opts = args_to_hash(*args)
     request = Ability::ClaimStatusInquiry::Request.new(user, password, service_id, opts)
-    doc = xml(post(request.endpoint, request.xml))
+    doc = xml(post(endpoint(request), request.xml))
     response = Ability::ClaimStatusInquiry::Response.new(doc, opts)
     response.parsed
   end
@@ -70,20 +71,24 @@ class Ability::Client
   # Generate a password
   def generate_password(service_id)
     request = Ability::PasswordGenerate::Request.new(service_id)
-    post(request.endpoint)
+    post(endpoint(request))
   end
 
   # Change a password or clerk password
   def change_password(service_id, new_password, *args)
     opts = args_to_hash(*args)
     request = Ability::ChangePassword::Request.new(user, password, service_id, new_password, opts)
-    post(request.endpoint, request.xml)
+    post(endpoint(request), request.xml)
 
     # Change client password unless clerk password is being changed
     @password = new_password unless opts[:clerk]
   end
   
   private
+
+  def endpoint(request)
+    "#{API_ROOT}/#{request.resource_name}/#{request.service_id}"
+  end
 
   def xml(raw)
     REXML::Document.new(raw)
