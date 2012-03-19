@@ -23,8 +23,8 @@ module Ability
         @opts = opts
       end
 
-      def endpoint
-        "https://access.abilitynetwork.com/portal/seapi/services/DDEClaimInquiry/#{service_id}"
+      def resource_name
+        "DDEClaimInquiry"
       end
 
       def xml

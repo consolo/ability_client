@@ -1,6 +1,5 @@
 module Ability
   class Request
-    def initialize
-    end
+    def initialize; end
   end
 end

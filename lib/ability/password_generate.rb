@@ -7,8 +7,8 @@ module Ability
         @service_id = service_id
       end
 
-      def endpoint
-        "https://access.abilitynetwork.com/portal/seapi/services/PasswordGenerate/#{service_id}"
+      def resource_name
+        "PasswordGenerate"
       end
     end
   end
