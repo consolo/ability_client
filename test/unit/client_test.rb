@@ -35,7 +35,7 @@ class AbilityClientTest < Test::Unit::TestCase
   end
 
   def test_claim_inquiry
-    claim_endpoint = "https://www.abilitynetwork.com/portal/seapi/services/DDEClaimInquiry/#{@service_id}"
+    claim_endpoint = "https://access.abilitynetwork.com/portal/seapi/services/DDEClaimInquiry/#{@service_id}"
     stub_request(:post, claim_endpoint).with(:body => request_xml(:claim_inquiry)).to_return(:body => response_xml(:claim_inquiry))
 
     assert_equal([
