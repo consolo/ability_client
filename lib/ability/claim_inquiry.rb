@@ -24,7 +24,7 @@ module Ability
       end
 
       def endpoint
-        "https://www.abilitynetwork.com/portal/seapi/services/DDEClaimInquiry/#{service_id}"
+        "https://access.abilitynetwork.com/portal/seapi/services/DDEClaimInquiry/#{service_id}"
       end
 
       def xml
