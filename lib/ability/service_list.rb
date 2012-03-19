@@ -3,7 +3,7 @@ module Ability
 
     class Request < Ability::Request
       def endpoint
-        "https://access.abilitynetwork.com/portal/services"
+        "https://access.abilitynetwork.com/portal/seapi/services"
       end
     end
     
