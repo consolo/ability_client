@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name = "ability_client"
+  s.name = "ability"
   s.version = "0.0.4"
   s.date = "2012-03-12"
   s.summary = "Ability Access API Ruby Client"
