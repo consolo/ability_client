@@ -34,10 +34,11 @@ class AbilityErrorTest < Test::Unit::TestCase
     assert_equal @message, e.error.message
   end
 
-  private
-
-  def xml(raw)
-    REXML::Document.new(raw)
+  def test_handles_html_404_messages
+    error = Ability::Error.generate(Ability::Parser.parse(load_fixture("errors/404.html")))
+    assert_equal "ResourceNotFound", error.code
+    assert_equal "Problem accessing /portal/services.", error.message
+    assert_equal nil, error.details
   end
 
 end

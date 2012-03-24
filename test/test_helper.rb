@@ -4,6 +4,11 @@ require 'webmock/test_unit'
 
 class Test::Unit::TestCase
 
+  # Load a fixture
+  def load_fixture(relative_path)
+    File.read(File.new(File.expand_path(File.join(File.dirname(__FILE__), "fixtures", relative_path))))
+  end
+
   # Load an error response XML fixture
   def error_xml(fixture)
     load_xml(:errors, nil, fixture)
