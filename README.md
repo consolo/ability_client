@@ -1,35 +1,34 @@
-Ruby Ability Client
-===================
+Ability Client
+==============
 
 ## INSTALL
 
 Add it to your Gemfile:
 
-    gem "ability_client", :git => "git://github.com/consolo/ability_client.git", :required => "ability"
+    gem "ability", :git => "git://github.com/consolo/ability_client.git"
 
-## USAGE
+## SETUP
 
-The client can be initialized without SSL info, but it will most likely be necessary in production:
+First, create a config file:
 
-    client = Ability::Client.new("SomeUser", "SomePassword", {
-      :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read("cert.pem")),
-      :ssl_client_key  => OpenSSL::PKey::RSA.new(File.read("key.pem"), "passphrase, if any"),
-      :ssl_ca_file     => "ca_certificate.pem",
-    })
+    :user: someuser
+    :password: somepass
+    :pem_key: somekey
+    :pkcs12_file: /path/to/ability/pkcs12_file
+    :ssl_ca_file: /path/to/ca_cert.pem
+    :service_id: 323
 
-The client can also use a PKCS#12 format key:
+The ca_cert_file config is required, but if the file does not exist, the client will create one automatically from the existing PKCS12 file.
 
-    certificate = OpenSSL::PKCS12.new(File.read("somekey.p12"), "passphrase, if any")
-    ca_cert_file = File.open("ca_cert.pem", "w") { |f| f.puts certificate.ca_certs.collect(&:to_s).join("\n") }
-    client = Ability::Client.new("SomeUser", "SomePassword", {
-      :ssl_client_cert => certificate.certificate,
-      :ssl_client_key  => certificate.key,
-      :ssl_ca_file     => "ca_cert.pem"
-    })
+Set the location of the config file:
+
+    Ability::Client.configure(:config_file => "/path/to/ability.yml")
+
+## USAGE:
 
 Most API calls like `eligibility_inquiry` will require a `service_id`. Query for service ids to get one:
 
-    client.services
+    Ability::Client.services
     => [{ :id => 1, :type => "BatchSubmit", :name => "NGS Medicare Part B Submit Claims (Downstate NY)",
     =>    :uri => "https://portal.visionshareinc.com/portal/seapi/services/BatchSubmit/1" },
     =>  { :id => 2, :type => "BatchReceiveList", :name => "NGS Medicare Part B Receive Reports / Remits (Downstate NY)",
@@ -38,8 +37,11 @@ Most API calls like `eligibility_inquiry` will require a `service_id`. Query for
 
 To make an eligibility API call:
 
+    # required if not set in initializer or config file
     service_id = 2
-    client.eligibility_inquiry(service_id,
+
+    Ability::Client.eligibility_inquiry(
+      :service_id => 2,
       :facility_state => "OH",
       :line_of_business => "PartA",
       :details => [
@@ -60,7 +62,7 @@ To make an eligibility API call:
 Any API call could result in an error from Ability. If an XML response contains an error, an exception with the same error code as the XML message is generated and raised. All generated exceptions descend from Ability::ResponseError. The original error details are accessible from the exception's response object.
 
     begin
-      client.services
+      Ability::Client.services
     rescue Ability::ResponseError => e
       error = e.response.error
       code = error.code
@@ -71,7 +73,7 @@ Any API call could result in an error from Ability. If an XML response contains 
 You can also rescue for special error cases, like PasswordExpired:
 
     begin
-      client.eligibility_inquiry(2,
+      Ability::Client.eligibility_inquiry(
         :facility_state => "OH",
         :line_of_business => "PartA",
         :details => [

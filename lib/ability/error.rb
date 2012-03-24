@@ -1,50 +1,55 @@
 module Ability
+
+  # Responses with a status between 400 and 503 that contain an <error></error> are
+  # returned in an Ability::Error. The error can be raised via the `raise` method
+  # and an exception will be thrown with the error's XML message.
+  #
+  # All error exceptions are subclasses of ResponseError, allowing all exceptions to
+  # be caught by rescuing ResponseError.
+  class ResponseError < StandardError
+    attr_reader :error
+
+    def initialize(error)
+      @error = error
+    end
+  end
+
+  # The Error class can generate a custom exception based on a given error code.
+  # All generated exceptions decend from ResponseError.
+  #
+  # An Error exception can be raised with the code, message and details of the error
+  # by calling `raise` on the initialized error.
   class Error
+    attr_reader :code, :message, :details
 
-    class << self
-      include Ability::Helpers::XmlHelpers
-
-      # Create an Error instance from a REXML parsed XML document
-      def from_doc(doc, response = nil)
-        begin
-          error = elem(doc, "//error")
-          code = elem_text(error, "code")
-          message = elem_text(error, "message")
-          details = error.elements.to_a("details/detail").map { |d|
-            k, v = [d.attributes["key"], d.attributes["value"]]
-            { k.to_sym => v }
-          }
-        rescue
-          text = elem(doc, "//html")
-          code = elem_text(text, "//head/title").gsub(' ', '')
-          message = doc
-          details = nil
-        end
-
-        new(code, message, details, response)
-      end
+    # Generate an error class from a given hash of parsed error response data
+    def self.generate(error)
+      code = error["code"]
+      message = error["message"]
+      details = error["details"]["detail"].inject({}) { |hash, detail|
+        hash[detail["key"]] = detail["value"]
+        hash
+      }
+      new(code, message, details)
     end
 
-    attr_reader :code, :message, :details, :response
-
-    def initialize(code, message, details, response = nil)
+    def initialize(code, message, details)
       @code = code
       @message = message
       @details = details
-      @response = response
       find_or_create_exception!
     end
 
     def raise
-      Kernel.raise exception.new(message, response)
+      Kernel.raise exception.new(self)
     end
 
     private
 
-    attr_reader :error, :exception
+    attr_reader :exception
 
     def find_or_create_exception!
-      @exception = Ability.const_defined?(code) ? find_exception : create_exception
+      @exception = Ability.const_defined?(code.to_sym) ? find_exception : create_exception
     end
 
     def find_exception
@@ -55,19 +60,6 @@ module Ability
 
     def create_exception
       Ability.const_set(code, Class.new(Ability::ResponseError))
-    end
-
-    class Response
-      attr_reader :doc, :response
-
-      def initialize(doc, response = nil)
-        @doc = doc
-        @response = response
-      end
-
-      def error
-        @error ||= Ability::Error.from_doc(doc, self)
-      end
     end
 
   end
