@@ -219,7 +219,8 @@ module Ability
         :accept => :xml,
         :headers => {
           "User-Agent" => self.user_agent,
-          "X-SEAPI-Version" => SEAPI_VERSION
+          "X-SEAPI-Version" => SEAPI_VERSION,
+          "Content-Type" => "text/xml"
         }
       }
 
