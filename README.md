@@ -28,20 +28,12 @@ Set the location of the config file:
 
 Most API calls like `eligibility_inquiry` will require a `service_id`. Query for service ids to get one:
 
-    Ability::Client.services
-    => [{ :id => 1, :type => "BatchSubmit", :name => "NGS Medicare Part B Submit Claims (Downstate NY)",
-    =>    :uri => "https://portal.visionshareinc.com/portal/seapi/services/BatchSubmit/1" },
-    =>  { :id => 2, :type => "BatchReceiveList", :name => "NGS Medicare Part B Receive Reports / Remits (Downstate NY)",
-    =>    :uri => "https://portal.visionshareinc.com/portal/seapi/services/BatchReceiveList/2" },
-    ...
+    Ability::Client.services.first
+    => [{ "id" => "1", "type" => "BatchSubmit", "name" => "NGS Medicare Part B Submit Claims (Downstate NY)"
 
 To make an eligibility API call:
 
-    # required if not set in initializer or config file
-    service_id = 2
-
     Ability::Client.eligibility_inquiry(
-      :service_id => 2,
       :facility_state => "OH",
       :line_of_business => "PartA",
       :details => [
@@ -59,12 +51,12 @@ To make an eligibility API call:
 
 ### Errors
 
-Any API call could result in an error from Ability. If an XML response contains an error, an exception with the same error code as the XML message is generated and raised. All generated exceptions descend from Ability::ResponseError. The original error details are accessible from the exception's response object.
+Any API call could result in an error from Ability. If an XML response contains an error, an exception with the same error code as the XML message is generated and raised. All generated exceptions descend from Ability::ResponseError. The original error details are accessible from the exception's `error` object.
 
     begin
       Ability::Client.services
-    rescue Ability::ResponseError => e
-      error = e.response.error
+    rescue Ability::ResponseError => exception
+      error = exception.error
       code = error.code
       message = error.message
       details = error.details 
@@ -88,6 +80,6 @@ You can also rescue for special error cases, like PasswordExpired:
           :date_of_birth => Date.parse("1925-05-08")
         }
       )
-    rescue Ability::PasswordExpired => e
+    rescue Ability::PasswordExpired => exception
       do_stuff
     end
