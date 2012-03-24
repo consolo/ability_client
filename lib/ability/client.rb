@@ -119,7 +119,6 @@ module Ability
       opts = args_to_hash(*args)
       details = opts[:details]
 
-      # TODO: wrap xml builder
       xml = Builder::XmlMarkup.new(:indent => 2)
       xml.instruct! :xml
       xml.eligibilityInquiryRequest(:xmlns => "http://www.visionshareinc.com/seapi/2008-09-22") {
@@ -134,17 +133,13 @@ module Ability
           }
         }
         xml.details {
-          xml.detail "ALL" if details.include?(:all)
-          xml.detail "FSS0_1751" if details.include?(:fss0_1751)
-          xml.detail "FSS0_1752" if details.include?(:fss0_1752)
-          xml.detail "FSS0_175J" if details.include?(:fss0_175J)
-          xml.detail "FSS0_1755" if details.include?(:fss0_1755)
-          xml.detail "FSS0_1756" if details.include?(:fss0_1756)
-          xml.detail "FSS0_1757" if details.include?(:fss0_1757)
-          xml.detail "FSS0_1758_175C" if details.include?(:fss0_1758_175C)
-          xml.detail "FSS0_1759" if details.include?(:fss0_1759)
-          xml.detail "FSS0_175K" if details.include?(:fss0_175K)
-          xml.detail "FSS0_175L" if details.include?(:fss0_175L)
+          if details.include?(:all)
+            xml.detail "ALL"
+          else
+            %w(1751 1752 175J 1755 1756 1757 1758_175C 1759 175K 175L).each do |screen|
+              xml.detail "FSS0_#{screen}" if details.include?(:"fss0_#{screen}")
+            end
+          end
         }
         if beneficiary = opts[:beneficiary]
           xml.beneficiary {
