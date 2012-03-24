@@ -9,20 +9,35 @@ Add it to your Gemfile:
 
 ## SETUP
 
-First, create a config file:
+Set up SSL and configure the client (possibly in an initializer):
 
-    :user: someuser
-    :password: somepass
-    :pem_key: somekey
-    :pkcs12_file: /path/to/ability/pkcs12_file
-    :ssl_ca_file: /path/to/ca_cert.pem
-    :service_id: 323
+    require 'openssl'
 
-The ca_cert_file config is required, but if the file does not exist, the client will create one automatically from the existing PKCS12 file.
+    module AbilitySetup
 
-Set the location of the config file:
+      def self.run
+        pkcs12 = OpenSSL::PKCS12.new(File.read('/path/to/pkcs12.p12'), "somekey")
+        ca_file = 'config/ability_ca_cert.pem'
 
-    Ability::Client.configure(:config_file => "/path/to/ability.yml")
+        # Write the CA file if it doesn't exist
+        if !File.exist?(ca_file)
+          File.open('config/ability_ca_cert.pem', 'w') { |f|
+            f.puts pkcs12.ca_certs.collect(&:to_s).join("\n")
+          }
+        end
+
+        Ability::Client.configure(
+          :user => "someuser",
+          :password => "somepass",
+          :service_id => 3932,
+          :ssl_client_cert => pkcs12.certificate,
+          :ssl_client_key => pkcs12.key,
+          :ssl_ca_file => ca_file
+        )
+      end
+    end
+
+    AbilitySetup.run
 
 ## USAGE:
 

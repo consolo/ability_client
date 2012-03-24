@@ -1,7 +1,6 @@
 require "rest-client"
 require "builder"
 require "xmlsimple"
-require "openssl"
 
 module Ability
 
@@ -43,27 +42,19 @@ module Ability
       @service_id = service_id
     end
 
-    def self.pem_key
-      @pem_key
-    end
-
-    def self.pem_key=(pem_key)
-      @pem_key = pem_key
-    end
-
-    def self.pkcs12_file
-      @pkcs12_file
-    end
-    
-    def self.pkcs12_file=(pkcs12_file)
-      @pkcs12_file = pkcs12_file
-    end
-
     def self.ssl_ca_file
       @ssl_ca_file
     end
 
+    def self.ssl_ca_file=(ssl_ca_file)
+      @ssl_ca_file = ssl_ca_file
+    end
+
     def self.ssl_client_cert
+      @ssl_client_cert
+    end
+
+    def self.ssl_client_cert=(ssl_client_cert)
       @ssl_client_cert
     end
 
@@ -71,42 +62,19 @@ module Ability
       @ssl_client_key
     end
 
-    def self.ssl_ca_file
-      @ssl_ca_file
+    def self.ssl_client_key=(ssl_client_key)
+      @ssl_client_key = ssl_client_key
     end
 
     # Configure the client
     def self.configure(opts)
-
-      # If a config_file option was passed, configure
-      # from a YML document
-      if opts[:config_file]
-        opts = YAML::load_file(config_file)
-        return configure(opts)
-      end
-
-      @user          = opts[:user]
-      @password      = opts[:password]
-      @pem_key       = opts[:pem_key]
-      @pkcs12_file   = opts[:pkcs12_file]
-      @ssl_ca_file   = opts[:ssl_ca_file]
-      @service_id    = opts[:service_id]
-
-      # Setup SSL
-      if @pkcs12_file
-        cert = OpenSSL::PKCS12.new(File.read(pkcs12_file), pem_key)
-
-        # Create the cert file if it doesn't exist
-        if !File.exist?(ssl_ca_file)
-          File.open(ssl_ca_file, "w") { |f|
-            f.puts cert.ca_certs.collect(&:to_s).join("\n")
-          }
-        end
-
-        @ssl_client_cert = cert.certificate
-        @ssl_client_key = cert.key
-        @ssl_ca_file = ssl_ca_file
-      end
+      @user             = opts[:user]
+      @password         = opts[:password]
+      @ssl_ca_file      = opts[:ssl_ca_file]
+      @service_id       = opts[:service_id]
+      @ssl_client_cert  = opts[:ssl_client_cert]
+      @ssl_client_key   = opts[:ssl_client_key]
+      @ssl_ca_file      = opts[:ssl_ca_file]
     end
 
     # Returns a list of services.

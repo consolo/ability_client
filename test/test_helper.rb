@@ -4,9 +4,14 @@ require 'webmock/test_unit'
 
 class Test::Unit::TestCase
 
+  # Get the path of a fixture given a path relative to fixtures
+  def fixture_path(relative_path)
+    File.expand_path(File.join(File.dirname(__FILE__), "fixtures", relative_path))
+  end
+
   # Load a fixture
   def load_fixture(relative_path)
-    File.read(File.new(File.expand_path(File.join(File.dirname(__FILE__), "fixtures", relative_path))))
+    File.read(File.new(fixture_path(relative_path)))
   end
 
   # Load an error response XML fixture
