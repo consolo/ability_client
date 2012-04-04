@@ -28,7 +28,7 @@ module Ability
       if error['head']
         # Handling a 404 HTML error response
         code = 'ResourceNotFound'
-        message = error['body']['p']['content'].gsub(' Reason:\n', '')
+        message = error['body']['p']['content'].gsub(" Reason:\n", '')
         details = nil
       else
         code = error['code']
