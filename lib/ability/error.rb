@@ -25,18 +25,20 @@ module Ability
     # Generate an error class from a given hash of parsed error response data
     def self.generate(error)
 
-      if error["head"]
+      if error['head']
         # Handling a 404 HTML error response
-        code = "ResourceNotFound"
-        message = error["body"]["p"]["content"].gsub(" Reason:\n", "")
+        code = 'ResourceNotFound'
+        message = error['body']['p']['content'].gsub(' Reason:\n', '')
         details = nil
       else
-        code = error["code"]
-        message = error["message"]
-        details = error["details"]["detail"].inject({}) { |hash, detail|
-          hash[detail["key"]] = detail["value"]
-          hash
-        }
+        code = error['code']
+        message = error['message']
+        if error['details'] && error['details']['detail']
+          details = error['details']['detail'].inject({}) { |hash, detail|
+            hash[detail['key']] = detail['value']
+            hash
+          }
+        end
       end
 
       new(code, message, details)
