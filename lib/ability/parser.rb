@@ -18,7 +18,8 @@ module Ability
           "session",
           "mspData",
           "homeHealthCertification",
-          "service"
+          "service",
+          "detail"
         ],
 
         "SuppressEmpty" => nil
