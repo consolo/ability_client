@@ -101,7 +101,7 @@ module Ability
           }
         }
         xml.details {
-          if details.include?(:all)
+          if !details || details == :all || details.include?(:all)
             xml.detail "ALL"
           else
             %w(1751 1752 175J 1755 1756 1757 1758_175C 1759 175K 175L).each do |screen|
