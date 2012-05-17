@@ -7,8 +7,8 @@ module Ability
   # Ability::Client is a module for interacting with the Ability ACCESS API
   module Client
 
-    SEAPI_VERSION = 1
-    API_ROOT      = "https://access.abilitynetwork.com/portal/seapi/services"
+    API_ROOT = 'https://access.abilitynetwork.com/access'
+    API_VERSION = 1
 
     def self.version
       Ability::VERSION
@@ -34,14 +34,6 @@ module Ability
       @password = password
     end
 
-    def self.service_id
-      @service_id
-    end
-
-    def self.service_id=(service_id)
-      @service_id = service_id
-    end
-
     def self.ssl_ca_file
       @ssl_ca_file
     end
@@ -55,7 +47,7 @@ module Ability
     end
 
     def self.ssl_client_cert=(ssl_client_cert)
-      @ssl_client_cert
+      @ssl_client_cert = ssl_client_cert
     end
 
     def self.ssl_client_key
@@ -68,28 +60,21 @@ module Ability
 
     # Configure the client
     def self.configure(opts)
-      @user             = opts[:user]
-      @password         = opts[:password]
-      @ssl_ca_file      = opts[:ssl_ca_file]
-      @service_id       = opts[:service_id]
-      @ssl_client_cert  = opts[:ssl_client_cert]
-      @ssl_client_key   = opts[:ssl_client_key]
-      @ssl_ca_file      = opts[:ssl_ca_file]
+      self.user = opts[:user]
+      self.password = opts[:password]
+      self.ssl_client_cert = opts[:ssl_client_cert]
+      self.ssl_client_key = opts[:ssl_client_key]
+      self.ssl_ca_file = opts[:ssl_ca_file]
     end
 
-    # Returns a list of services.
-    def self.services
-      parse(get(API_ROOT))["service"]
-    end
-
-    # Return the results of an eligibility inquiry
-    def self.eligibility_inquiry(*args)
+    # Return the results of a HIQA inquiry
+    def self.hiqa_inquiry(*args)
       opts = args_to_hash(*args)
       details = opts[:details]
 
       xml = Builder::XmlMarkup.new(:indent => 2)
       xml.instruct! :xml
-      xml.eligibilityInquiryRequest(:xmlns => "http://www.visionshareinc.com/seapi/2008-09-22") {
+      xml.hiqaRequest {
         xml.medicareMainframe {
           xml.application {
             xml.facilityState opts[:facility_state]
@@ -100,33 +85,40 @@ module Ability
             xml.password password
           }
         }
+
         xml.details {
           if !details || details == :all || details.include?(:all)
-            xml.detail "ALL"
+            xml.detail 'ALL'
           else
-            %w(1751 1752 175J 1755 1756 1757 1758_175C 1759 175K 175L).each do |screen|
-              xml.detail "FSS0_#{screen}" if details.include?(:"fss0_#{screen}")
+            %w(1 2_3 4 5 6_7 8 9 10 11 12 13_N).each do |screen|
+              xml.detail "Page#{screen}" if details.include?(:"page_#{screen}")
             end
           end
         }
-        if beneficiary = opts[:beneficiary]
-          xml.beneficiary {
-            xml.hic beneficiary[:hic]
-            xml.lastName beneficiary[:last_name]
-            xml.firstName beneficiary[:first_name]
-            xml.sex beneficiary[:sex]
-            xml.dateOfBirth beneficiary[:date_of_birth]
-          }
-        end
+
+        xml.searchCriteria {
+          xml.hic opts[:hic]
+          xml.lastName opts[:last_name][0,5]
+          xml.firstInitial opts[:first_initial]
+          xml.dateOfBirth opts[:date_of_birth].strftime('%Y-%m-%d')
+          xml.sex opts[:sex]
+          xml.requestorId opts[:requestor_id]
+          xml.intermediaryNumber opts[:intermediary_number]
+          xml.npiIndicator opts[:npi_indicator] if opts[:npi_indicator]
+          xml.providerId opts[:provider_id]
+          xml.hostId opts[:host_id] if opts[:host_id]
+          xml.applicableDate Date.strptime('%Y-%m-%d', opts[:applicable_date]) if opts[:applicable_date]
+          xml.reasonCode opts[:reason_code] if opts[:reason_code]
+        }
       }
     
-      parse(post(endpoint("DDEEligibilityInquiry"), xml.target!))["eligibility"]
+      parse(post(endpoint('cwf/hiqa'), xml.target!))
     end
 
     # Generate a password
     def self.generate_password(*args)
       opts = args_to_hash(*args)
-      post(endpoint("PasswordGenerate"))
+      post(endpoint('password/generate'))
     end
 
     # Change a password or clerk password
@@ -135,7 +127,7 @@ module Ability
 
       xml = Builder::XmlMarkup.new(:indent => 2)
       xml.instruct! :xml, :standalone => "yes"
-      xml.passwordChangeRequest(:xmlns => "http://www.visionshareinc.com/seapi/2008-09-22") {
+      xml.passwordChangeRequest {
         xml.medicareMainframe {
           xml.application { 
             xml.facilityState opts[:facility_state]
@@ -155,7 +147,7 @@ module Ability
         xml.newPassword new_password
       }
 
-      post(endpoint("PasswordChange"), xml.target!)
+      post(endpoint('password/change'), xml.target!)
 
       # Change client password unless clerk password is being changed
       self.password = new_password unless opts[:clerk]
@@ -164,7 +156,7 @@ module Ability
     private
 
     def self.endpoint(resource)
-      "#{API_ROOT}/#{resource}/#{service_id}"
+      "#{API_ROOT}/#{resource}"
     end
 
     # Convert XML to a hash
@@ -186,13 +178,13 @@ module Ability
         :url => url,
         :accept => :xml,
         :headers => {
-          "User-Agent" => self.user_agent,
-          "X-SEAPI-Version" => SEAPI_VERSION,
-          "Content-Type" => "text/xml"
+          'User-Agent' => self.user_agent,
+          'X-Access-Version' => API_VERSION,
+          'Content-Type' => 'text/xml'
         }
       }
 
-      if @ssl_client_cert && @ssl_client_key && @ssl_ca_file
+      if ssl_client_cert && ssl_client_key && ssl_ca_file
         opts.merge!({
           :ssl_ca_file => ssl_ca_file,
           :ssl_client_key => ssl_client_key,
