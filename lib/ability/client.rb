@@ -116,8 +116,7 @@ module Ability
     end
 
     # Generate a password
-    def self.generate_password(*args)
-      opts = args_to_hash(*args)
+    def self.generate_password
       post(endpoint('password/generate'))
     end
 
