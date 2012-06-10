@@ -1,6 +1,6 @@
-require "rest-client"
-require "builder"
-require "xmlsimple"
+require 'rest-client'
+require 'builder'
+require 'xmlsimple'
 
 module Ability
 
