@@ -34,6 +34,22 @@ module Ability
       @password = password
     end
 
+    def self.facility_state
+      @facility_state
+    end
+
+    def self.facility_state=(facility_state)
+      @facility_state = facility_state
+    end
+
+    def self.line_of_business
+      @line_of_business
+    end
+
+    def self.line_of_business=(line_of_business)
+      @line_of_business = line_of_business
+    end
+
     def self.ssl_ca_file
       @ssl_ca_file
     end
@@ -62,6 +78,8 @@ module Ability
     def self.configure(opts)
       self.user = opts[:user]
       self.password = opts[:password]
+      self.facility_state = opts[:facility_state]
+      self.line_of_business = opts[:line_of_business]
       self.ssl_client_cert = opts[:ssl_client_cert]
       self.ssl_client_key = opts[:ssl_client_key]
       self.ssl_ca_file = opts[:ssl_ca_file]
@@ -77,8 +95,8 @@ module Ability
       xml.hiqaRequest {
         xml.medicareMainframe {
           xml.application {
-            xml.facilityState opts[:facility_state]
-            xml.lineOfBusiness opts[:line_of_business]
+            xml.facilityState facility_state
+            xml.lineOfBusiness line_of_business
           }
           xml.credential {
             xml.userId user
@@ -129,8 +147,8 @@ module Ability
       xml.passwordChangeRequest {
         xml.medicareMainframe {
           xml.application { 
-            xml.facilityState opts[:facility_state]
-            xml.lineOfBusiness opts[:line_of_business]
+            xml.facilityState facility_state
+            xml.lineOfBusiness line_of_business
           }
           xml.credential {
             xml.userId user
