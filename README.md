@@ -27,9 +27,10 @@ Set up SSL and configure the client (possibly in an initializer):
         end
 
         Ability::Client.configure(
-          :user => "someuser",
-          :password => "somepass",
-          :service_id => 3932,
+          :user => 'someuser',
+          :password => 'somepass',
+          :facility_state => 'SC',
+          :line_of_business => 'HHH',
           :ssl_client_cert => pkcs12.certificate,
           :ssl_client_key => pkcs12.key,
           :ssl_ca_file => ca_file
@@ -41,27 +42,14 @@ Set up SSL and configure the client (possibly in an initializer):
 
 ## USAGE:
 
-Most API calls like `eligibility_inquiry` will require a `service_id`. Query for service ids to get one:
+To make a HIQA API call:
 
-    Ability::Client.services.first
-    => [{ "id" => "1", "type" => "BatchSubmit", "name" => "NGS Medicare Part B Submit Claims (Downstate NY)"
-
-To make an eligibility API call:
-
-    Ability::Client.eligibility_inquiry(
-      :facility_state => "OH",
-      :line_of_business => "PartA",
-      :details => [
-        :fss0_1751,
-        :fss0_1752
-      ],
-      :beneficiary => {
-        :hic => "123456789A",
-        :last_name => "Doe",
-        :first_name => "John",
-        :sex => "M",
-        :date_of_birth => Date.parse("1925-05-08")
-      }
+    Ability::Client.hiqa_inquiry(
+      :hic => '123456789A',
+      :last_name => 'Doe',
+      :first_name => 'John',
+      :sex => 'M',
+      :date_of_birth => Date.parse('1925-05-08')
     )
 
 ### Errors
@@ -80,20 +68,12 @@ Any API call could result in an error from Ability. If an XML response contains 
 You can also rescue for special error cases, like PasswordExpired:
 
     begin
-      Ability::Client.eligibility_inquiry(
-        :facility_state => "OH",
-        :line_of_business => "PartA",
-        :details => [
-          :fss0_1751,
-          :fss0_1752
-        ],
-        :beneficiary => {
-          :hic => "123456789A",
-          :last_name => "Doe",
-          :first_name => "John",
-          :sex => "M",
-          :date_of_birth => Date.parse("1925-05-08")
-        }
+      Ability::Client.hiqa_inquiry(
+        :hic => '123456789A',
+        :last_name => 'Doe',
+        :first_name => 'John',
+        :sex => 'M',
+        :date_of_birth => Date.parse('1925-05-08')
       )
     rescue Ability::PasswordExpired => exception
       do_stuff
