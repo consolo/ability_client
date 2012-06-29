@@ -19,7 +19,8 @@ module Ability
           "mspData",
           "homeHealthCertification",
           "service",
-          "detail"
+          "detail",
+          "hospiceBenefitPeriod"
         ],
 
         "SuppressEmpty" => nil
