@@ -121,7 +121,7 @@ module Ability
           xml.dateOfBirth opts[:date_of_birth].strftime('%Y-%m-%d')
           xml.sex opts[:sex]
           xml.requestorId opts[:requestor_id]
-          xml.intermediaryNumber opts[:intermediary_number]
+          xml.intermediaryNumber opts[:intermediary_number][0,4]
           xml.npiIndicator opts[:npi_indicator] if opts[:npi_indicator]
           xml.providerId opts[:provider_id]
           xml.hostId opts[:host_id] if opts[:host_id]
