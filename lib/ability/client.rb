@@ -3,6 +3,16 @@ require 'builder'
 require 'xmlsimple'
 
 module Ability
+  
+  # Use Ability::Client.response.body to access the last raw response
+  class Response
+    attr_reader :body
+    attr_accessor :error
+
+    def initialize(body)
+      @body = body
+    end
+  end
 
   # Ability::Client is a module for interacting with the Ability ACCESS API
   module Client
@@ -74,6 +84,14 @@ module Ability
       @ssl_client_key = ssl_client_key
     end
 
+    def self.response
+      @response
+    end
+
+    def self.response=(response)
+      @response = response
+    end
+
     # Configure the client
     def self.configure(opts)
       self.user = opts[:user]
@@ -116,7 +134,7 @@ module Ability
 
         xml.searchCriteria {
           xml.hic opts[:hic]
-          xml.lastName opts[:last_name][0,5]
+          xml.lastName opts[:last_name][0,6]
           xml.firstInitial opts[:first_initial]
           xml.dateOfBirth opts[:date_of_birth].strftime('%Y-%m-%d')
           xml.sex opts[:sex]
@@ -213,10 +231,15 @@ module Ability
       opts[:payload] = payload if payload
 
       RestClient::Request.execute(opts) do |response, request, result, &block|
+
+        # make the last response available
+        self.response = Ability::Response.new(response.body)
+
         # If an error code is in the response, raise a ResponseError exception.
         # Otherwise, return the response normally.
         if [400,401,404,405,415,500,503].include?(response.code)
           error = Ability::Error.generate(parse(response.body))
+          self.response.error = error
           error.raise
         else
           response.return!(request, result, &block)
