@@ -93,7 +93,8 @@ module Ability
     end
 
     # Configure the client
-    def self.configure(opts)
+    def self.configure(*args)
+      opts = args_to_hash(*args)
       self.user = opts[:user]
       self.password = opts[:password]
       self.facility_state = opts[:facility_state]
