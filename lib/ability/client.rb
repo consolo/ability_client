@@ -93,8 +93,7 @@ module Ability
     end
 
     # Configure the client
-    def self.configure(*args)
-      opts = args_to_hash(*args)
+    def self.configure(opts)
       self.user = opts[:user]
       self.password = opts[:password]
       self.facility_state = opts[:facility_state]
@@ -105,8 +104,7 @@ module Ability
     end
 
     # Return the results of a HIQA inquiry
-    def self.hiqa_inquiry(*args)
-      opts = args_to_hash(*args)
+    def self.hiqa_inquiry(opts = {})
       details = opts[:details]
 
       xml = Builder::XmlMarkup.new(:indent => 2)
@@ -158,9 +156,7 @@ module Ability
     end
 
     # Change a password or clerk password
-    def self.change_password(new_password, *args)
-      opts = args_to_hash(*args)
-
+    def self.change_password(new_password, opts = {})
       xml = Builder::XmlMarkup.new(:indent => 2)
       xml.instruct! :xml, :standalone => "yes"
       xml.passwordChangeRequest {
@@ -247,10 +243,5 @@ module Ability
         end
       end
     end
-
-    def self.args_to_hash(*args)
-      Hash[*args.flatten]
-    end
-
   end
 end
