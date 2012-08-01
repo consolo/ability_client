@@ -146,7 +146,7 @@ module Ability
           xml.reasonCode opts[:reason_code] if opts[:reason_code]
         }
       }
-    
+
       parse(post(endpoint('cwf/hiqa'), xml.target!))
     end
 
@@ -205,6 +205,32 @@ module Ability
     end
 
     def self.rest_exec(method, url, payload = nil)
+      opts = build_rest_client_opts(method, url, payload)
+      make_request(opts)
+    rescue Timeout::Error
+      raise Ability::TransmissionError, "Connection to server timed out @ #{url}"
+    rescue Errno::ECONNREFUSED
+      raise Ability::TransmissionError, "Connection to server was refused @ #{url}"
+    end
+
+    def self.make_request(opts)
+      RestClient::Request.execute(opts) do |response, request, result, &block|
+        # make the last response available
+        self.response = Ability::Response.new(response.body)
+
+        # If an error code is in the response, raise a ResponseError exception.
+        # Otherwise, return the response normally.
+        if [400,401,404,405,415,500,503].include?(response.code)
+          error = Ability::Error.generate(parse(response.body))
+          self.response.error = error
+          error.raise
+        else
+          response.return!(request, result, &block)
+        end
+      end
+    end
+
+    def self.build_rest_client_opts(method, url, payload)
       opts = {
         :method => method,
         :url => url,
@@ -226,22 +252,8 @@ module Ability
       end
 
       opts[:payload] = payload if payload
-
-      RestClient::Request.execute(opts) do |response, request, result, &block|
-
-        # make the last response available
-        self.response = Ability::Response.new(response.body)
-
-        # If an error code is in the response, raise a ResponseError exception.
-        # Otherwise, return the response normally.
-        if [400,401,404,405,415,500,503].include?(response.code)
-          error = Ability::Error.generate(parse(response.body))
-          self.response.error = error
-          error.raise
-        else
-          response.return!(request, result, &block)
-        end
-      end
+      opts
     end
+
   end
 end

@@ -1,5 +1,7 @@
 module Ability
 
+  class TransmissionError < StandardError; end
+
   # Responses with a status between 400 and 503 that contain an <error></error> are
   # returned in an Ability::Error. The error can be raised via the `raise` method
   # and an exception will be thrown with the error's XML message.
