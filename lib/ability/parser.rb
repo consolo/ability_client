@@ -9,21 +9,22 @@ module Ability
       {
         
         # The following elements must always be returned as an array
-        "ForceArray" => [
-          "reasonCode",
-          "mcoPlan",
-          "preventativeService",
-          "transplant",
-          "period",
-          "session",
-          "mspData",
-          "homeHealthCertification",
-          "service",
-          "detail",
-          "hospiceBenefitPeriod"
+        'ForceArray' => [
+          'reasonCode',
+          'mcoPlan',
+          'preventativeService',
+          'transplant',
+          'period',
+          'session',
+          'mspData',
+          'homeHealthCertification',
+          'service',
+          'detail',
+          'hospiceBenefitPeriod',
+          'medicareSecondaryPayer'
         ],
 
-        "SuppressEmpty" => nil
+        'SuppressEmpty' => nil
       }
     end
   end
