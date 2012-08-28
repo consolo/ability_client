@@ -92,6 +92,22 @@ module Ability
       @response = response
     end
 
+    def self.timeout
+      @timeout
+    end
+
+    def self.timeout=(timeout)
+      @timeout = timeout
+    end
+
+    def self.open_timeout
+      @open_timeout
+    end
+
+    def self.open_timeout=(open_timeout)
+      @open_timeout = open_timeout
+    end
+
     # Configure the client
     def self.configure(opts)
       self.user = opts[:user]
@@ -101,6 +117,8 @@ module Ability
       self.ssl_client_cert = opts[:ssl_client_cert]
       self.ssl_client_key = opts[:ssl_client_key]
       self.ssl_ca_file = opts[:ssl_ca_file]
+      self.timeout = opts[:timeout]
+      self.open_timeout = opts[:open_timeout]
     end
 
     # Return the results of a HIQA inquiry
@@ -239,7 +257,9 @@ module Ability
           'User-Agent' => self.user_agent,
           'X-Access-Version' => API_VERSION,
           'Content-Type' => 'text/xml'
-        }
+        },
+        :timeout => timeout,
+        :open_timeout => open_timeout
       }
 
       if ssl_client_cert && ssl_client_key && ssl_ca_file
