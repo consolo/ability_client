@@ -207,7 +207,7 @@ module Ability
     def self.rest_exec(method, url, payload = nil)
       opts = build_rest_client_opts(method, url, payload)
       make_request(opts)
-    rescue Timeout::Error
+    rescue Timeout::Error, RestClient::RequestTimeout
       raise Ability::TransmissionError, "Connection to server timed out @ #{url}"
     rescue Errno::ECONNREFUSED
       raise Ability::TransmissionError, "Connection to server was refused @ #{url}"
