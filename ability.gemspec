@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = 'ability'
-  s.version = '0.0.16'
-  s.date = '2012-03-12'
+  s.version = '0.1.0'
+  s.date = '2012-10-01'
   s.summary = 'Ability Access API Ruby Client'
   s.description = 'A Ruby client for interacting with the Ability ACCESS API'
   s.authors = ['consolochase@gmail.com']
