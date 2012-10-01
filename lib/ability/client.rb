@@ -3,6 +3,22 @@ require 'builder'
 require 'xmlsimple'
 
 module Ability
+
+  HIQA_SCREENS = {
+    beneficiary_information: 'BeneficiaryInformation',
+    hospice_information: 'HospiceInformation',
+    home_health_benefit_periods: 'HomeHealthBenefitPeriods',
+    home_health_episodes: 'HomeHealthEpisodes',
+    screening_information: 'ScreeningInformation',
+    preventative_services: 'PreventativeServices',
+    smoking_cessation: 'SmokingCessation',
+    rehabilitation_sessions: 'RehabilitationSessions',
+    home_health_certifications: 'HomeHealthCertifications',
+    telehealth_services: 'TelehealthServices',
+    behavioral_services: 'BehavioralServices',
+    high_intensity_behavioral_counseling: 'HighIntensityBehavioralCounseling',
+    medicare_secondary_payers: 'MedicareSecondaryPayers'
+  }
   
   # Use Ability::Client.response.body to access the last raw response
   class Response
@@ -143,8 +159,8 @@ module Ability
           if !details || details == :all || details.include?(:all)
             xml.detail 'ALL'
           else
-            %w(1 2_3 4 5 6_7 8 9 10 11 12 13_N).each do |screen|
-              xml.detail "Page#{screen}" if details.include?(:"page_#{screen}")
+            details.each do |detail|
+              xml.detail HIQA_SCREENS[detail]
             end
           end
         }
