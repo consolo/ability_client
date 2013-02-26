@@ -13,6 +13,7 @@ module Ability
 
     def initialize(error)
       @error = error
+      super(error.message)
     end
   end
 

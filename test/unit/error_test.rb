@@ -32,6 +32,7 @@ class AbilityErrorTest < Test::Unit::TestCase
     @error.raise
   rescue Ability::PasswordExpired => e
     assert_equal @message, e.error.message
+    assert_equal @message, e.message
   end
 
   def test_handles_html_404_messages
