@@ -1,0 +1,32 @@
+PATH
+  remote: .
+  specs:
+    ability (0.2.0)
+      builder
+      rest-client
+      xml-simple
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.3.6)
+    builder (3.2.2)
+    crack (0.4.2)
+      safe_yaml (~> 1.0.0)
+    mime-types (2.3)
+    netrc (0.7.7)
+    rest-client (1.7.2)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    safe_yaml (1.0.3)
+    webmock (1.18.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+    xml-simple (1.1.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  ability!
+  webmock

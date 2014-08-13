@@ -22,8 +22,7 @@ module Ability
   
   # Use Ability::Client.response.body to access the last raw response
   class Response
-    attr_reader :body
-    attr_accessor :error
+    attr_reader :body, :error
 
     def initialize(body)
       @body = body
@@ -31,114 +30,31 @@ module Ability
   end
 
   # Ability::Client is a module for interacting with the Ability ACCESS API
-  module Client
+  class Client
+    attr_accessor :response, :user, :password, :facility_state
 
     API_ROOT = 'https://access.abilitynetwork.com/access'
     API_VERSION = 1
-
-    def self.version
-      Ability::VERSION
-    end
-
-    def self.user_agent
-      "Ruby Ability Client/#{self.version}"
-    end
-
-    def self.user
-      @user
-    end
-
-    def self.user=(user)
-      @user = user
-    end
-
-    def self.password
-      @password
-    end
-
-    def self.password=(password)
-      @password = password
-    end
-
-    def self.facility_state
-      @facility_state
-    end
-
-    def self.facility_state=(facility_state)
-      @facility_state = facility_state
-    end
-
-    def self.line_of_business
-      @line_of_business
-    end
-
-    def self.line_of_business=(line_of_business)
-      @line_of_business = line_of_business
-    end
-
-    def self.ssl_ca_file
-      @ssl_ca_file
-    end
-
-    def self.ssl_ca_file=(ssl_ca_file)
-      @ssl_ca_file = ssl_ca_file
-    end
-
-    def self.ssl_client_cert
-      @ssl_client_cert
-    end
-
-    def self.ssl_client_cert=(ssl_client_cert)
-      @ssl_client_cert = ssl_client_cert
-    end
-
-    def self.ssl_client_key
-      @ssl_client_key
-    end
-
-    def self.ssl_client_key=(ssl_client_key)
-      @ssl_client_key = ssl_client_key
-    end
-
-    def self.response
-      @response
-    end
-
-    def self.response=(response)
-      @response = response
-    end
-
-    def self.timeout
-      @timeout
-    end
-
-    def self.timeout=(timeout)
-      @timeout = timeout
-    end
-
-    def self.open_timeout
-      @open_timeout
-    end
-
-    def self.open_timeout=(open_timeout)
-      @open_timeout = open_timeout
-    end
+    USER_AGENT = "Ruby Ability Client/#{Ability::VERSION}"
 
     # Configure the client
     def self.configure(opts)
-      self.user = opts[:user]
-      self.password = opts[:password]
-      self.facility_state = opts[:facility_state]
-      self.line_of_business = opts[:line_of_business]
-      self.ssl_client_cert = opts[:ssl_client_cert]
-      self.ssl_client_key = opts[:ssl_client_key]
-      self.ssl_ca_file = opts[:ssl_ca_file]
-      self.timeout = opts[:timeout]
-      self.open_timeout = opts[:open_timeout]
+      @@line_of_business = opts[:line_of_business]
+      @@ssl_client_cert = opts[:ssl_client_cert]
+      @@ssl_client_key = opts[:ssl_client_key]
+      @@ssl_ca_file = opts[:ssl_ca_file]
+      @@timeout = opts[:timeout]
+      @@open_timeout = opts[:open_timeout]
+    end
+
+    def initialize(user, password, facility_state)
+      @user = user
+      @password = password
+      @facility_state = facility_state
     end
 
     # Return the results of a HIQA inquiry
-    def self.hiqa_inquiry(opts = {})
+    def hiqa_inquiry(opts = {})
       details = opts[:details]
 
       xml = Builder::XmlMarkup.new(:indent => 2)
@@ -146,12 +62,12 @@ module Ability
       xml.hiqaRequest {
         xml.medicareMainframe {
           xml.application {
-            xml.facilityState facility_state
-            xml.lineOfBusiness line_of_business
+            xml.facilityState @facility_state
+            xml.lineOfBusiness @@line_of_business
           }
           xml.credential {
-            xml.userId user
-            xml.password password
+            xml.userId @user
+            xml.password @password
           }
         }
 
@@ -185,12 +101,12 @@ module Ability
     end
 
     # Generate a password
-    def self.generate_password
+    def generate_password
       post(endpoint('password/generate'))
     end
 
     # Change a password or clerk password
-    def self.change_password(new_password, opts = {})
+    def change_password(new_password, opts = {})
       xml = Builder::XmlMarkup.new(:indent => 2)
       xml.instruct! :xml, :standalone => "yes"
       xml.passwordChangeRequest {
@@ -216,29 +132,29 @@ module Ability
       post(endpoint('password/change'), xml.target!)
 
       # Change client password unless clerk password is being changed
-      self.password = new_password unless opts[:clerk]
+      @password = new_password unless opts[:clerk]
     end
     
     private
 
-    def self.endpoint(resource)
+    def endpoint(resource)
       "#{API_ROOT}/#{resource}"
     end
 
     # Convert XML to a hash
-    def self.parse(xml)
+    def parse(xml)
       Ability::Parser.parse(xml)
     end
 
-    def self.get(url)
+    def get(url)
       rest_exec(:get, url)
     end
 
-    def self.post(url, payload = nil)
+    def post(url, payload = nil)
       rest_exec(:post, url, payload)
     end
 
-    def self.rest_exec(method, url, payload = nil)
+    def rest_exec(method, url, payload = nil)
       opts = build_rest_client_opts(method, url, payload)
       make_request(opts)
     rescue Timeout::Error, RestClient::RequestTimeout
@@ -247,16 +163,16 @@ module Ability
       raise Ability::TransmissionError, "Connection to server was refused @ #{url}"
     end
 
-    def self.make_request(opts)
+    def make_request(opts)
       RestClient::Request.execute(opts) do |response, request, result, &block|
         # make the last response available
-        self.response = Ability::Response.new(response.body)
+        @response = Ability::Response.new(response.body)
 
         # If an error code is in the response, raise a ResponseError exception.
         # Otherwise, return the response normally.
-        if [400,401,404,405,415,500,503].include?(response.code)
-          error = Ability::Error.generate(parse(response.body))
-          self.response.error = error
+        if [400,401,404,405,415,500,503].include?(@response.code)
+          error = Ability::Error.generate(parse(@response.body))
+          @response.error = error
           error.raise
         else
           response.return!(request, result, &block)
@@ -264,26 +180,26 @@ module Ability
       end
     end
 
-    def self.build_rest_client_opts(method, url, payload)
+    def build_rest_client_opts(method, url, payload)
       opts = {
-        :method => method,
-        :url => url,
-        :accept => :xml,
-        :headers => {
-          'User-Agent' => self.user_agent,
+        method: method,
+        url: url,
+        accept: :xml,
+        headers: {
+          'User-Agent' => USER_AGENT,
           'X-Access-Version' => API_VERSION,
           'Content-Type' => 'text/xml'
         },
-        :timeout => timeout,
-        :open_timeout => open_timeout
+        timeout: @@timeout,
+        open_timeout: @@open_timeout
       }
 
-      if ssl_client_cert && ssl_client_key && ssl_ca_file
+      if @@ssl_client_cert && @@ssl_client_key && @@ssl_ca_file
         opts.merge!({
-          :ssl_ca_file => ssl_ca_file,
-          :ssl_client_key => ssl_client_key,
-          :ssl_client_cert => ssl_client_cert,
-          :verify_ssl => true
+          ssl_ca_file: @@ssl_ca_file,
+          ssl_client_key: @@ssl_client_key,
+          ssl_client_cert: @@ssl_client_cert,
+          verify_ssl: true
         })
       end
 

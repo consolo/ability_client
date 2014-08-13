@@ -1,7 +1,6 @@
 require 'test/unit'
 require 'webmock/test_unit'
 
-
 class Test::Unit::TestCase
 
   # Get the path of a fixture given a path relative to fixtures
@@ -41,5 +40,4 @@ class Test::Unit::TestCase
 
     File.read(File.new(xml_file))
   end
-
 end

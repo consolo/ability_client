@@ -44,7 +44,7 @@ Set up SSL and configure the client (possibly in an initializer):
 
 To make a HIQA API call:
 
-    Ability::Client.hiqa_inquiry(
+    Ability::Client.new(user, password, state).hiqa_inquiry(
       :hic => '123456789A',
       :last_name => 'Doe',
       :first_name => 'John',
@@ -57,7 +57,7 @@ To make a HIQA API call:
 Any API call could result in an error from Ability. If an XML response contains an error, an exception with the same error code as the XML message is generated and raised. All generated exceptions descend from Ability::ResponseError. The original error details are accessible from the exception's `error` object.
 
     begin
-      Ability::Client.services
+      Ability::Client.new(user, password, state).services
     rescue Ability::ResponseError => exception
       error = exception.error
       code = error.code
@@ -68,7 +68,7 @@ Any API call could result in an error from Ability. If an XML response contains 
 You can also rescue for special error cases, like PasswordExpired:
 
     begin
-      Ability::Client.hiqa_inquiry(
+      Ability::Client.new(user, password, state).hiqa_inquiry(
         :hic => '123456789A',
         :last_name => 'Doe',
         :first_name => 'John',
