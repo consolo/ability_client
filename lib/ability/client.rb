@@ -22,7 +22,7 @@ module Ability
   
   # Use Ability::Client.response.body to access the last raw response
   class Response
-    attr_reader :body, :error
+    attr_accessor :body, :error
 
     def initialize(body)
       @body = body
