@@ -170,7 +170,7 @@ module Ability
 
         # If an error code is in the response, raise a ResponseError exception.
         # Otherwise, return the response normally.
-        if [400,401,404,405,415,500,503].include?(@response.code)
+        if [400,401,404,405,415,500,503].include?(response.code)
           error = Ability::Error.generate(parse(@response.body))
           @response.error = error
           error.raise
