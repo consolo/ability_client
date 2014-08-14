@@ -112,12 +112,12 @@ module Ability
       xml.passwordChangeRequest {
         xml.medicareMainframe {
           xml.application { 
-            xml.facilityState facility_state
-            xml.lineOfBusiness line_of_business
+            xml.facilityState @facility_state
+            xml.lineOfBusiness @@line_of_business
           }
           xml.credential {
-            xml.userId user
-            xml.password password
+            xml.userId @user
+            xml.password @password
           }
           if clerk = opts[:clerk]
             xml.clerkCredential {
