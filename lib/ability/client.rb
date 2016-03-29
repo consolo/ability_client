@@ -33,7 +33,7 @@ module Ability
   class Client
     attr_accessor :response, :user, :password, :facility_state
 
-    API_ROOT = 'https://access.abilitynetwork.com/access'
+    API_ROOT = 'https://access1.abilitynetwork.com/access'
     API_VERSION = 1
     USER_AGENT = "Ruby Ability Client/#{Ability::VERSION}"
 
@@ -111,7 +111,7 @@ module Ability
       xml.instruct! :xml, :standalone => "yes"
       xml.passwordChangeRequest {
         xml.medicareMainframe {
-          xml.application { 
+          xml.application {
             xml.facilityState @facility_state
             xml.lineOfBusiness @@line_of_business
           }
